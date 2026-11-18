@@ -4,6 +4,8 @@
 
 From a simple boar herb roast in the Meadows to an Essence of Eternal Frost in the Deep North, Viking's Feast adds a full cooking progression for every biome, all cooked at the **Runic Cauldron**.
 
+[![Report a Bug](https://img.shields.io/badge/Bug_melden_%2F_Report_a_Bug-d73a4a?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=bug_report.yml) [![Request a Feature](https://img.shields.io/badge/Idee_%2F_Request_a_Feature-1f6feb?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=feature_request.yml) [![Changelog](https://img.shields.io/badge/Changelog-6e7781?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/blob/main/CHANGELOG.md) [![Thunderstore](https://img.shields.io/badge/Thunderstore-23a8e0?style=for-the-badge)](https://thunderstore.io/c/valheim/p/Pscht/VikingsFeast/)
+
 ![Runic Cauldron](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/runic_cauldron_stages.png)
 
 ---
@@ -28,9 +30,9 @@ This is the support repository for **Viking's Feast**.
 
 | Mod | Tickets / Issues | Bug melden / Report a bug | Idee vorschlagen / Suggest an idea | Changelog |
 | --- | --- | --- | --- | --- |
-| Viking's Feast | [Tickets ansehen / View issues](https://github.com/Pschtgasm/VikingsFeast/issues) | [Bug melden / Report a bug](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=bug_report.yml) | [Idee vorschlagen / Suggest an idea](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=feature_request.yml) | [CHANGELOG.md](CHANGELOG.md) |
+| Viking's Feast | [Tickets ansehen / View issues](https://github.com/Pschtgasm/VikingsFeast/issues) | [Bug melden / Report a bug](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=bug_report.yml) | [Idee vorschlagen / Suggest an idea](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=feature_request.yml) | [CHANGELOG.md](https://github.com/Pschtgasm/VikingsFeast/blob/main/CHANGELOG.md) |
 
-[Viking's Feast auf Thunderstore / on Thunderstore](https://thunderstore.io/c/valheim/?q=VikingsFeast)
+[Viking's Feast auf Thunderstore / on Thunderstore](https://thunderstore.io/c/valheim/p/Pscht/VikingsFeast/)
 
 ---
 
@@ -193,7 +195,7 @@ Dazu kommen drei Festmahl-Platten für Gruppen (Moorschmaus, Goldene Erntetafel,
 
 ## 📝 Changelog
 
-See [CHANGELOG.md](CHANGELOG.md).
+See [CHANGELOG.md](https://github.com/Pschtgasm/VikingsFeast/blob/main/CHANGELOG.md).
 
 ## 💬 Feedback & Bugs
 
