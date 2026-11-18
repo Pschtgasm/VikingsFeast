@@ -4,7 +4,7 @@
 
 From a simple boar herb roast in the Meadows to an Essence of Eternal Frost in the Deep North, Viking's Feast adds a full cooking progression for every biome, all cooked at the **Runic Cauldron**.
 
-[![Report a Bug](https://img.shields.io/badge/Bug_melden_%2F_Report_a_Bug-d73a4a?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=bug_report.yml) [![Request a Feature](https://img.shields.io/badge/Idee_%2F_Request_a_Feature-1f6feb?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=feature_request.yml) [![Changelog](https://img.shields.io/badge/Changelog-6e7781?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/blob/main/CHANGELOG.md) [![Thunderstore](https://img.shields.io/badge/Thunderstore-23a8e0?style=for-the-badge)](https://thunderstore.io/c/valheim/p/Pscht/VikingsFeast/)
+[![Report a Bug](https://img.shields.io/badge/Bug_melden_%2F_Report_a_Bug-d73a4a?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=bug_report.yml) [![Request a Feature](https://img.shields.io/badge/Idee_%2F_Request_a_Feature-1f6feb?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=feature_request.yml) [![Recipe Sheet](https://img.shields.io/badge/Recipe_Sheet-2da44e?style=for-the-badge)](https://claude.ai/artifact/HViqJptevjZptkcLeBPn3C) [![Changelog](https://img.shields.io/badge/Changelog-6e7781?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/blob/main/CHANGELOG.md) [![Thunderstore](https://img.shields.io/badge/Thunderstore-23a8e0?style=for-the-badge)](https://thunderstore.io/c/valheim/p/Pscht/VikingsFeast/)
 
 ![Runic Cauldron](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/runic_cauldron_stages.png)
 
@@ -69,7 +69,7 @@ Build the **Runic Cauldron** with the Hammer (Crafting tab). It has its own fire
 
 ![Food Showcase](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/food_showcase.png)
 
-Every dish makes **two portions** by default. Deep North dishes require the **Ice Distillery**.
+Every dish makes **two portions** by default. Deep North dishes require the **Ice Distillery**. 📊 Sortable version: [Recipe Sheet](https://claude.ai/artifact/HViqJptevjZptkcLeBPn3C)
 
 | Biome | Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
 |---|---|:-:|:-:|:-:|:-:|---|
