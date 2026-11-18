@@ -6,7 +6,7 @@ From a simple boar herb roast in the Meadows to an Essence of Eternal Frost in t
 
 [![Report a Bug](https://img.shields.io/badge/Bug_melden_%2F_Report_a_Bug-d73a4a?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=bug_report.yml) [![Request a Feature](https://img.shields.io/badge/Idee_%2F_Request_a_Feature-1f6feb?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=feature_request.yml) [![Changelog](https://img.shields.io/badge/Changelog-6e7781?style=for-the-badge)](https://github.com/Pschtgasm/VikingsFeast/blob/main/CHANGELOG.md) [![Thunderstore](https://img.shields.io/badge/Thunderstore-23a8e0?style=for-the-badge)](https://thunderstore.io/c/valheim/p/Pscht/VikingsFeast/)
 
-![Runic Cauldron](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/runic_cauldron_stages.png)
+![Runic Cauldron](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/runic_cauldron_stages.png)
 
 ---
 
@@ -55,7 +55,7 @@ This is the support repository for **Viking's Feast**.
 
 Build the **Runic Cauldron** with the Hammer (Crafting tab). It has its own fire underneath: look at the logs and press **E** to add wood. The cauldron only cooks while the fire is burning. While you cook, steam rises from the cauldron in the colour of its stage. You can switch the built-in fire off in the config to use a separate campfire like in vanilla. Place the upgrades near the cauldron (up to 10 m away, configurable) to raise its station level and unlock stronger dishes.
 
-![Cauldron Upgrades](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/cauldron_upgrades.png)
+![Cauldron Upgrades](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/cauldron_upgrades.png)
 
 | Upgrade | Station level | Materials |
 |---|---|---|
@@ -67,7 +67,7 @@ Build the **Runic Cauldron** with the Hammer (Crafting tab). It has its own fire
 
 ## 🍲 Recipes
 
-![Food Showcase](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/food_showcase.png)
+![Food Showcase](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/food_showcase.png)
 
 Every dish makes **two portions** by default.
 
@@ -203,6 +203,7 @@ Dazu kommen drei Festmahl-Platten für Gruppen (Moorschmaus, Goldene Erntetafel,
 | `Translations/` | German and English localization |
 | `tools/` | Python scripts that generate the 3D models |
 | `docs/notizen/` | Development notes (German) |
+| `docs/images/` | Images for this description |
 
 Build on Windows: copy `local.props.example` to `local.props`, set your `BepInEx.dll` path, then run `Build-Windows.bat`. Requires the .NET SDK, Valheim and Jötunn.
 
