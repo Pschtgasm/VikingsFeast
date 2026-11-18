@@ -69,59 +69,35 @@ Build the **Runic Cauldron** with the Hammer (Crafting tab). It has its own fire
 
 ![Food Showcase](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/food_showcase.png)
 
-Every dish makes **two portions** by default.
+Every dish makes **two portions** by default. Deep North dishes require the **Ice Distillery**.
 
-### 🌿 Meadows & Black Forest
-| Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
-|---|:-:|:-:|:-:|:-:|---|
-| Boar Herb Roast | 36 | 13 | – | 1 | Boar trophy 1, Dandelion 5, Honey 3 |
-| Forest Berry Mash | 12 | 40 | – | 1 | Raspberries 8, Dandelion 4, Honey 3 |
-| Yellow Mushroom Soup | 15 | 48 | – | 1 | Yellow mushroom 8, Carrot 4, Blueberries 4 |
-| Grilled Herb Fish | 38 | 15 | – | 1 | Raw fish 2, Dandelion 3, Honey 2 |
-| Forest Mushroom Fish Pan | 42 | 20 | – | 1 | Raw fish 2, Yellow mushroom 4, Thistle 3 |
+| Biome | Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
+|---|---|:-:|:-:|:-:|:-:|---|
+| **🌿 Meadows & Black Forest** | Boar Herb Roast | 36 | 13 | – | 1 | Boar trophy 1, Dandelion 5, Honey 3 |
+|  | Forest Berry Mash | 12 | 40 | – | 1 | Raspberries 8, Dandelion 4, Honey 3 |
+|  | Yellow Mushroom Soup | 15 | 48 | – | 1 | Yellow mushroom 8, Carrot 4, Blueberries 4 |
+|  | Grilled Herb Fish | 38 | 15 | – | 1 | Raw fish 2, Dandelion 3, Honey 2 |
+|  | Forest Mushroom Fish Pan | 42 | 20 | – | 1 | Raw fish 2, Yellow mushroom 4, Thistle 3 |
+| **🐸 Swamp** | Draugr Meat Stew | 66 | 20 | – | 2 | Entrails 5, Turnip 4, Thistle 5 |
+|  | Blood Seaweed Stew | 64 | 22 | – | 2 | Bloodbag 4, Entrails 4, Thistle 5 |
+|  | Swamp Fish Stew | 22 | 60 | – | 2 | Trollfish 2, Thistle 4, Turnip 3 |
+| **🏔️ Mountains** | Wolf Herb Roast | 68 | 22 | – | 2 | Wolf trophy 1, Wolf meat 4, Onion 4 |
+|  | Dragon Broth | 24 | 70 | – | 2 | Powdered dragon eggshells 2, Onion 4, Freeze gland 2 |
+|  | Frost Fish Roast | 71 | 24 | – | 2 | Northern salmon 2, Onion 4, Freeze gland 2 |
+| **🌾 Plains** | Golden Barley Porridge | 25 | 78 | – | 2 | Barley flour 8, Cloudberries 6, Honey 4 |
+|  | Pufferfish Barley Pan | 82 | 28 | – | 2 | Pufferfish 2, Barley flour 5, Cloudberries 4 |
+|  | Hearty Flatbread | 35 | 70 | – | 2 | Dough: Barley flour 10, Onion 3, Lox meat 2 → bake in the oven |
+| **🍄 Mistlands** | Magic Mushroom Cream | 28 | 88 | – | 3 | Magecap 6, Jotun puffs 6, Royal jelly 4 |
+|  | Anglerfish Mist Soup | 32 | 99 | – | 3 | Anglerfish 2, Magecap 5, Royal jelly 3 |
+|  | Royal Mist Ragout | 30 | 15 | 85 | 2 | Royal jelly 4, Magecap 5, Hare meat 3 |
+|  | Tick Broth | 70 | 24 | – | 3 | Bloodbag 4, Woodland herb blend 2, Sap 2 |
+| **🌋 Ashlands** | Volcanic Vulture Roast | 100 | 32 | – | 3 | Volture meat 4, Vineberry cluster 6, Smoke puff 4 |
+|  | Ember Herb Soup | 32 | 96 | – | 3 | Vineberry cluster 7, Smoke puff 6, Magecap 4 |
+|  | Asksvin Ember Feast | 38 | 20 | 100 | 3 | Celestial feather 3, Proustite powder 5, Asksvin meat 4 |
+| **❄️ Deep North** | Essence of Eternal Frost | 38 | 20 | 110 | 4 | Liquid frost 6, Kale 2, Lingonberries 5 |
+|  | Moose Burger | 110 | 35 | – | 4 | Moose meat 2, Barley flour 4, Onion 2, Lingonberries 3 |
+|  | Northern Lights Oat Porridge | 35 | 112 | – | 4 | Oats 8, Lingonberries 5, Oat milk 4, Poteitr 3 |
 
-### 🐸 Swamp
-| Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
-|---|:-:|:-:|:-:|:-:|---|
-| Draugr Meat Stew | 66 | 20 | – | 2 | Entrails 5, Turnip 4, Thistle 5 |
-| Blood Seaweed Stew | 64 | 22 | – | 2 | Bloodbag 4, Entrails 4, Thistle 5 |
-| Swamp Fish Stew | 22 | 60 | – | 2 | Trollfish 2, Thistle 4, Turnip 3 |
-
-### 🏔️ Mountains
-| Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
-|---|:-:|:-:|:-:|:-:|---|
-| Wolf Herb Roast | 68 | 22 | – | 2 | Wolf trophy 1, Wolf meat 4, Onion 4 |
-| Dragon Broth | 24 | 70 | – | 2 | Powdered dragon eggshells 2, Onion 4, Freeze gland 2 |
-| Frost Fish Roast | 71 | 24 | – | 2 | Northern salmon 2, Onion 4, Freeze gland 2 |
-
-### 🌾 Plains
-| Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
-|---|:-:|:-:|:-:|:-:|---|
-| Golden Barley Porridge | 25 | 78 | – | 2 | Barley flour 8, Cloudberries 6, Honey 4 |
-| Pufferfish Barley Pan | 82 | 28 | – | 2 | Pufferfish 2, Barley flour 5, Cloudberries 4 |
-| Hearty Flatbread | 35 | 70 | – | 2 | Dough: Barley flour 10, Onion 3, Lox meat 2 → bake in the oven |
-
-### 🍄 Mistlands
-| Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
-|---|:-:|:-:|:-:|:-:|---|
-| Magic Mushroom Cream | 28 | 88 | – | 3 | Magecap 6, Jotun puffs 6, Royal jelly 4 |
-| Anglerfish Mist Soup | 32 | 99 | – | 3 | Anglerfish 2, Magecap 5, Royal jelly 3 |
-| Royal Mist Ragout | 30 | 15 | 85 | 2 | Royal jelly 4, Magecap 5, Hare meat 3 |
-| Tick Broth | 70 | 24 | – | 3 | Bloodbag 4, Woodland herb blend 2, Sap 2 |
-
-### 🌋 Ashlands
-| Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
-|---|:-:|:-:|:-:|:-:|---|
-| Volcanic Vulture Roast | 100 | 32 | – | 3 | Volture meat 4, Vineberry cluster 6, Smoke puff 4 |
-| Ember Herb Soup | 32 | 96 | – | 3 | Vineberry cluster 7, Smoke puff 6, Magecap 4 |
-| Asksvin Ember Feast | 38 | 20 | 100 | 3 | Celestial feather 3, Proustite powder 5, Asksvin meat 4 |
-
-### ❄️ Deep North *(requires the Ice Distillery)*
-| Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
-|---|:-:|:-:|:-:|:-:|---|
-| Essence of Eternal Frost | 38 | 20 | 110 | 4 | Liquid frost 6, Kale 2, Lingonberries 5 |
-| Moose Burger | 110 | 35 | – | 4 | Moose meat 2, Barley flour 4, Onion 2, Lingonberries 3 |
-| Northern Lights Oat Porridge | 35 | 112 | – | 4 | Oats 8, Lingonberries 5, Oat milk 4, Poteitr 3 |
 ### 🍖 Feast platters
 Made at the **Food Preparation Table** (or the Runic Cauldron, see config) and placed with the vanilla **Serving Tray**. Everyone at the table can eat: 10 servings, 50 minutes each. Unlike the balanced vanilla feasts, each platter has a focus: Bog Feast health, Golden Harvest Table stamina, Northern Lights Banquet eitr. They look like the vanilla feasts, slightly tinted: greenish, golden and frosty blue.
 
