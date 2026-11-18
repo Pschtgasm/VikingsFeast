@@ -1,0 +1,1 @@
+Wiesen: Beerenmus (BerryMash), Kräuterfisch (HerbFish), Wildschwein-Kräuterbraten (BoarHerbRoast) durch die drei vom Nutzer bereitgestellten Motive ersetzt. Helle Schachbrett-Hintergründe maskiert; 256x256 RGBA. Quellcodepaket, keine DLL kompiliert. Andere Icons aus der hochgeladenen 1.4.3-ZIP unverändert.

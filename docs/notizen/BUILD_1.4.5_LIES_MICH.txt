@@ -1,0 +1,23 @@
+VIKING'S FEAST 1.4.5 - BUILD
+============================
+
+1. Build-Windows.bat doppelklicken.
+2. Valheim-Installationsordner eingeben (z. B. C:\Program Files (x86)\Steam\steamapps\common\Valheim).
+   Falls Jotunn.dll nicht automatisch gefunden wird, den vollen Pfad zur Jotunn.dll eingeben
+   (liegt im Mod-Manager-Profil unter BepInEx\plugins\ValheimModding-Jotunn\Jotunn.dll).
+3. Fertiges Paket: dist\VikingsFeast_1.4.5.zip -> so bei Thunderstore hochladen.
+
+Hinweis: In VikingFoodPlus.csproj ist der Pfad zur BepInEx.dll ueber local.props einstellbar
+(Vorlage: local.props.example).
+
+Vor dem Hochladen testen:
+- BepInEx\config\de.vikingfoodplus.mod.cfg einmal loeschen (sonst bleiben alte Werte aktiv).
+- Spiel starten, in BepInEx\LogOutput.log nach "bersprungen" suchen -> sollte nichts kommen.
+
+Aenderungen in 1.4.5 (siehe CHANGELOG.md):
+- 15 bisher deaktivierte Gerichte entfernt (Code, Icons, Uebersetzungen) -> 24 Gerichte, alle aktiv
+- Kraeuterfisch + Frostfischbraten: Vorlage FishCooked (vorher FishRaw = keine Werte im Spiel)
+- Alle Fischgerichte 2 Fische, Sumpffisch-Eintopf mit Trollfisch (Fish5)
+- Frostfischbraten: Nordlachs (Fish10), Kugelfisch-Gerstenpfanne: Kugelfisch (Fish12)
+- Item-IDs korrigiert: PowderedDragonEgg, SpiceForests, MushroomSmokePuff, FrozenFuel, Oat
+- Vulkangeierbraten (Name), Uebersetzungs-JSON angepasst

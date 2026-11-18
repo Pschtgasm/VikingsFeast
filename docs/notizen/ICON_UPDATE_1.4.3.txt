@@ -1,0 +1,15 @@
+Viking's Feast – Icon-Update 1.4.3 (Quellcodepaket)
+===================================================
+Ersetzt wurden die Einzelbilder in Icons/:
+BoarHerbRoast, BloodThistleStew, SwampFishStew, WolfHerbRoast,
+WolfThistleStew, AsksvinFireRoast, MooseBurger.
+Neu: HeartyFlatbread.png (aus der früheren freigegebenen Inventarvorschau
+zugeschnitten, kein neu generiertes Motiv).
+
+Die internen Rezept-IDs und die C#-Icon-Zuordnung bleiben erhalten.
+Das vorhandene Fladenbrot-Backofen-Feature aus 1.4.2 bleibt unverändert.
+
+ACHTUNG: Es wurde keine neue DLL kompiliert oder in Valheim getestet.
+Die im Umlauf befindliche DLL enthält diese Bilder NICHT automatisch.
+Windows: Build-Windows.bat mit installiertem Valheim und Jotunn ausführen.
+Vorherige DLL sichern, nur eine Mod-Version aktiv lassen.

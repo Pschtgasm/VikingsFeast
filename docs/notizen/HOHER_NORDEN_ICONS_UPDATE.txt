@@ -1,0 +1,4 @@
+Neue freigegebene Icons: MooseBurger, NorthernOatPorridge, EternalFrostEssence.
+256x256 RGBA mit Transparenz.
+Basis 1.4.4. Alle weiteren Dateien unveraendert.
+Keine DLL kompiliert; Quell-/Assetpaket, Valheim-Test erforderlich.

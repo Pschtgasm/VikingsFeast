@@ -1,0 +1,11 @@
+newmtl wood_dark
+Kd 0.24 0.15 0.08
+Ke 0 0 0
+
+newmtl charcoal
+Kd 0.06 0.05 0.05
+Ke 0 0 0
+
+newmtl ember
+Kd 1.0 0.38 0.08
+Ke 1.0 0.35 0.05

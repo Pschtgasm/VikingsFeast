@@ -1,0 +1,31 @@
+VikingFoodPlus 0.6 - Icons
+23 neue freigestellte Einzelillustrationen; 4 vorhandene Icons beibehalten.
+BoarHerbRoast: neue Illustration 1
+DeerThistleRoast: neue Illustration 2
+DraugrStew: neue Illustration 3
+HerbFish: neue Illustration 4
+ForestHerbRagout: neue Illustration 5
+WolfHerbRoast: neue Illustration 6
+LoxHerbRoast: neue Illustration 7
+ForestFishPan: neue Illustration 8
+FrostFishRoast: neue Illustration 9
+PufferBarleyPan: neue Illustration 10
+SeekerHerbRoast: neue Illustration 11
+BloodThistleStew: neue Illustration 12
+YellowMushroomSoup: neue Illustration 13
+AsksvinFireRoast: neue Illustration 14
+VolcanicMeatStew: neue Illustration 15
+SwampFishStew: neue Illustration 16
+WolfThistleStew: neue Illustration 17
+MushroomHoneyStew: neue Illustration 18
+AnglerMistSoup: neue Illustration 19
+LoxMushroomPan: neue Illustration 20
+MistMushroomStew: neue Illustration 21
+SwampHerbSoup: neue Illustration 22
+MountainMushroomBroth: neue Illustration 23
+BerryMash: bisheriges Icon aus Version 0.5
+GoldenBarleyPorridge: bisheriges Icon aus Version 0.5
+MagicMushroomCream: bisheriges Icon aus Version 0.5
+EmberHerbSoup: bisheriges Icon aus Version 0.5
+
+Icons als PNG mit Alpha-Kanal (RGBA), 256x256; im Projekt als EmbeddedResource eingebunden.

@@ -1,0 +1,6 @@
+<!-- Kopieren als "local.props" und Pfad anpassen. local.props wird nicht ins Repo hochgeladen. -->
+<Project>
+  <PropertyGroup>
+    <BepInExDll>C:\Pfad\zu\deinem\Profil\BepInEx\core\BepInEx.dll</BepInExDll>
+  </PropertyGroup>
+</Project>

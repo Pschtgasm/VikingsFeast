@@ -1,0 +1,15 @@
+Viking's Feast 1.4.6 - Update-Vorbereitung
+
+Dieses Archiv ist ein BUILD-PAKET, KEIN direkt installierbares Thunderstore-Release.
+Die 23 ersetzten Food-Icons werden per EmbeddedResource in die DLL kompiliert.
+Die separat hochgeladene VikingFoodPlus(6).dll wurde NICHT als neue DLL ausgegeben,
+weil sie die geänderten Icons nicht enthält.
+
+1. Mit dotnet SDK und den Valheim/BepInEx/Jotunn DLLs neu kompilieren.
+2. Kompilierte VikingFoodPlus.dll, manifest.json, icon.png und README.md
+   direkt ins Wurzelverzeichnis einer neuen ZIP legen.
+3. DLL-Version und Manifest-Version auf 1.4.6 abstimmen (Quellcode vorbereitet).
+4. Auf Client und Server testen; bestehende Config sichern.
+5. Thunderstore-Release erst nach erfolgreichem Test hochladen.
+
+Die Unity-AssetBundles für die 3D-Modelle wurden nicht neu gebaut.

@@ -1,0 +1,33 @@
+VIKING'S FEAST 1.4.5 - ICONZUORDNUNG
+
+Neue Icons:
+YellowMushroomSoup = Gelbe Pilzsuppe <- Gelbe Pilzsuppe.png
+BloodThistleStew = Blut-Seetang-Eintopf <- Blut-Seetang-Eintopf.png
+AsksvinFireRoast = Vulkangierbraten <- Vulkangierbraten.png
+AnglerMistSoup = Anglerfisch-Nebelsuppe <- Anglerfisch-Nebelsuppe.png
+HerbFish = Gebratener Kräuterfisch <- Gebratener Kräuterfisch.png
+EmberHerbSoup = Glutkräuter-Suppe <- Glutkräuter-Suppe.png
+GoldenBarleyPorridge = Goldener Gerstenbrei <- Goldener Gerstenbrei.png
+FrostFishRoast = Frostfischbraten <- Frostfischbraten.png
+WolfThistleStew = Drachenbrühe <- Drachenbrühe.png
+MooseBurger = Elchburger <- Elchburger.png
+WolfHerbRoast = Wolfsbraten mit Kräutern <- Wolfsbraten mit Kräutern.png
+BoarHerbRoast = Wildschwein-Kräuterbraten <- Wildschwein-Kräuterbraten.png
+AsksvinEmberFeast = Asksvin-Glutmahl <- Asksvin-Glutmahl.png
+TickSud = Zecken-Sud <- Zecken-Sud.png
+ForestFishPan = Waldpilz-Fischpfanne <- Waldpilz-Fischpfanne.png
+DraugrStew = Draugr-Fleischtopf <- Draugr-Fleischtopf.png
+EternalFrostEssence = Essenz des Ewigen Frosts <- Essenz des Ewigen Frosts.png
+HeartyFlatbread = Herzhaftes Fladenbrot <- Herzhaftes Fladenbrot.png
+SwampFishStew = Sumpffisch-Eintopf <- Sumpffisch-Eintopf.png
+MagicMushroomCream = Magische Pilzcreme <- Magische Pilzcreme.png
+NorthernOatPorridge = Nordlicht-Haferbrei <- Nordlicht-Haferbrei.png
+BerryMash = Waldbeerenmus <- Beerenmus.png
+PufferBarleyPan = Kugelfisch-Gerstenpfanne <- Kugelfisch-Gerstenpfanne.png
+
+Bereits vorhandene Icons aus dem Ausgangspaket:
+RoyalMistRagout = Königliches Nebelragout
+
+HINWEIS: Dies ist das vollständige Quellcode- und Icon-Paket, keine kompilierte DLL.
+Zum Spielen muss die DLL mit Build-Windows.bat und den Valheim/BepInEx/Jotunn-Abhängigkeiten neu gebaut werden.
+Ein Ingame-Funktionstest wurde nicht durchgeführt.

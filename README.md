@@ -193,6 +193,21 @@ Dazu kommen drei Festmahl-Platten für Gruppen (Moorschmaus, Goldene Erntetafel,
 
 ---
 
+## 🧰 Source & Build
+
+| Folder | Content |
+|---|---|
+| `src/` | C# source code |
+| `Icons/` | Food and build menu icons (embedded into the DLL) |
+| `Models/` | 3D models of the Runic Cauldron and its upgrades (`.obj` / `.mtl`) |
+| `Translations/` | German and English localization |
+| `tools/` | Python scripts that generate the 3D models |
+| `docs/notizen/` | Development notes (German) |
+
+Build on Windows: copy `local.props.example` to `local.props`, set your `BepInEx.dll` path, then run `Build-Windows.bat`. Requires the .NET SDK, Valheim and Jötunn.
+
+---
+
 ## 📝 Changelog
 
 See [CHANGELOG.md](https://github.com/Pschtgasm/VikingsFeast/blob/main/CHANGELOG.md).

@@ -1,0 +1,4 @@
+Nebellande-Icons aktualisiert: MagicMushroomCream, AnglerMistSoup, TickSud.
+Basis: Vikings_Feast_1.4.3_Wiesen_Icons_Aktualisiert.zip
+Icons 256x256 RGBA. Bestehende Rezepte, Konfiguration und Quellcode unveraendert.
+Hinweis: ZIP ist Quell-/Assetpaket; DLL nicht neu kompiliert. Im Spiel testen.

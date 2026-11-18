@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>VikingFoodPlus</AssemblyName>
+  </PropertyGroup>
+  <!-- Eigene Pfade in local.props eintragen (wird nicht ins Repo hochgeladen), siehe local.props.example -->
+  <Import Project="local.props" Condition="Exists('local.props')" />
+  <PropertyGroup>
+    <BepInExDll Condition="'$(BepInExDll)' == ''">$(APPDATA)\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Default\BepInEx\core\BepInEx.dll</BepInExDll>
+  </PropertyGroup>
+  <Target Name="CheckBepInEx" BeforeTargets="ResolveReferences" Condition="!Exists('$(BepInExDll)')">
+    <Error Text="BepInEx.dll nicht gefunden: $(BepInExDll). Bitte den tatsächlichen Dateipfad prüfen oder mit -p:BepInExDll=... angeben." />
+  </Target>
+  <PropertyGroup><BepInExDllDir>$([System.IO.Path]::GetDirectoryName($(BepInExDll)))\</BepInExDllDir></PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BepInEx"><HintPath>$(BepInExDll)</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(BepInExDllDir)0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Jotunn"><HintPath>$(JotunnDll)</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AssetBundleModule"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.AssetBundleModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextRenderingModule"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.TextRenderingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UIModule"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.UIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.IMGUIModule"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.IMGUIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="assembly_valheim"><HintPath>$(ValheimDir)/valheim_Data/Managed/assembly_valheim.dll</HintPath><Private>false</Private></Reference>
+    <EmbeddedResource Include="Icons\*.png" LogicalName="VikingFoodPlus.Icons.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Models\*.obj;Models\*.mtl" LogicalName="VikingFoodPlus.Models.%(Filename)%(Extension)" />
+    <Reference Include="UnityEngine.ParticleSystemModule"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.ParticleSystemModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ImageConversionModule"><HintPath>$(ValheimDir)/valheim_Data/Managed/UnityEngine.ImageConversionModule.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

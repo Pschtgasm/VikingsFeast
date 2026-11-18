@@ -1,0 +1,7 @@
+bin/
+obj/
+dist/
+local.props
+*.user
+.vs/
+__pycache__/
