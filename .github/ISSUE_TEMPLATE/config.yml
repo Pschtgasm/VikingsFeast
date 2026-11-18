@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "📝 Changelog"
+    url: https://github.com/Pschtgasm/VikingsFeast/blob/main/CHANGELOG.md
+    about: "Vielleicht ist es schon behoben? / Maybe it's already fixed?"

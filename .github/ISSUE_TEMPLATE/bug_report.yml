@@ -1,0 +1,61 @@
+name: "🐞 Bug melden / Report a bug"
+description: "Etwas funktioniert nicht wie erwartet / Something does not work as expected"
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke fürs Melden! Bitte fülle die Felder so gut wie möglich aus. Deutsch oder Englisch ist beides okay.
+        Thanks for reporting! Please fill in the fields as well as you can. German or English is fine.
+  - type: input
+    id: mod_version
+    attributes:
+      label: "Viking's Feast Version"
+      placeholder: "1.4.5"
+    validations:
+      required: true
+  - type: input
+    id: game_version
+    attributes:
+      label: "Valheim Version"
+      placeholder: "0.220.x"
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: "Spielmodus / Game mode"
+      options:
+        - "Singleplayer"
+        - "Multiplayer (Host)"
+        - "Multiplayer (Dedicated Server)"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: "Was ist passiert? / What happened?"
+      description: "Was hast du erwartet, und was ist stattdessen passiert? / What did you expect, and what happened instead?"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Schritte zum Nachstellen / Steps to reproduce"
+      placeholder: |
+        1. Runenkessel bauen / Build the Runic Cauldron
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: mods
+    attributes:
+      label: "Andere Mods / Other mods"
+      description: "Mod-Liste oder r2modman-Profilcode / Mod list or r2modman profile code"
+  - type: textarea
+    id: log
+    attributes:
+      label: "Log"
+      description: "Inhalt von / Contents of `BepInEx/LogOutput.log` (oder die Datei hier hineinziehen / or drag the file here)"
+      render: text

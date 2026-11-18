@@ -1,0 +1,34 @@
+name: "💡 Idee vorschlagen / Suggest an idea"
+description: "Neues Gericht, neue Funktion oder Verbesserung / New dish, feature or improvement"
+title: "[Idee] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke für deine Idee! Deutsch oder Englisch ist beides okay.
+        Thanks for your idea! German or English is fine.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: "Art / Type"
+      options:
+        - "Neues Gericht / New dish"
+        - "Runenkessel & Erweiterungen / Runic Cauldron & upgrades"
+        - "Balance / Werte / Stats"
+        - "Config"
+        - "Sonstiges / Other"
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: "Deine Idee / Your idea"
+      description: "Bei einem Gericht gerne mit Biom und Zutaten / For a dish, feel free to add biome and ingredients"
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: "Warum? / Why?"
+      description: "Was würde das im Spiel verbessern? / What would it improve in the game?"

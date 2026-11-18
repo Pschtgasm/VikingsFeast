@@ -8,6 +8,32 @@ From a simple boar herb roast in the Meadows to an Essence of Eternal Frost in t
 
 ---
 
+## 🛠️ Support
+
+### Deutsch
+
+Willkommen im Support-Repo von **Viking's Feast**.
+
+1. Klicke unten auf **Bug melden** oder **Idee vorschlagen**.
+2. Gib dem Ticket einen kurzen Titel, zum Beispiel `[Bug] Runenkessel kocht nicht trotz Feuer`.
+3. Gib bei einem Bug die Versionen von Valheim und Viking's Feast an, dazu die Schritte, mit denen der Fehler auftritt. Sehr hilfreich ist die Datei `BepInEx/LogOutput.log`.
+
+### English
+
+This is the support repository for **Viking's Feast**.
+
+1. Select **Report a bug** or **Suggest an idea** below.
+2. Give the issue a short title, for example `[Bug] Runic Cauldron does not cook although the fire is burning`.
+3. For a bug, include the Valheim and Viking's Feast versions and the steps to reproduce it. Your `BepInEx/LogOutput.log` helps a lot.
+
+| Mod | Tickets / Issues | Bug melden / Report a bug | Idee vorschlagen / Suggest an idea | Changelog |
+| --- | --- | --- | --- | --- |
+| Viking's Feast | [Tickets ansehen / View issues](https://github.com/Pschtgasm/VikingsFeast/issues) | [Bug melden / Report a bug](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=bug_report.yml) | [Idee vorschlagen / Suggest an idea](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=feature_request.yml) | [CHANGELOG.md](CHANGELOG.md) |
+
+[Viking's Feast auf Thunderstore / on Thunderstore](https://thunderstore.io/c/valheim/?q=VikingsFeast)
+
+---
+
 ## ✨ Features
 
 - **3 feast platters** for groups, placed with the Serving Tray
@@ -171,4 +197,4 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## 💬 Feedback & Bugs
 
-Found a bug or have an idea for a new dish? Open an issue on [GitHub](https://github.com/Pschtgasm/VikingsFeast/issues)!
+Found a bug or have an idea for a new dish? See **Support** at the top: [report a bug](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=bug_report.yml) or [suggest an idea](https://github.com/Pschtgasm/VikingsFeast/issues/new?template=feature_request.yml).
