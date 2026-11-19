@@ -10,21 +10,46 @@ from meshlib import *
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, '..', 'Models')
 
-PALETTE = {
-    'stone': ((.42, .42, .44), (0, 0, 0)), 'stone_dark': ((.26, .26, .29), (0, 0, 0)),
-    'wood': ((.38, .23, .12), (0, 0, 0)), 'wood_dark': ((.22, .14, .09), (0, 0, 0)), 'wood_pale': ((.56, .43, .28), (0, 0, 0)),
-    'iron': ((.17, .17, .19), (0, 0, 0)), 'copper': ((.66, .36, .15), (0, 0, 0)), 'rope': ((.55, .45, .27), (0, 0, 0)),
-    'leaf': ((.2, .42, .14), (0, 0, 0)), 'moss': ((.27, .42, .14), (0, 0, 0)),
-    'antler': ((.74, .66, .48), (0, 0, 0)), 'bone': ((.86, .81, .66), (0, 0, 0)), 'void': ((.04, .04, .05), (0, 0, 0)),
-    'glow_gold': ((.9, .6, .15), (1.0, .62, .12)), 'glow_green': ((.45, .9, .15), (.35, .95, .1)),
-    'glow_pink': ((.9, .3, .95), (.85, .2, .95)), 'glow_blue': ((.35, .75, 1), (.25, .65, 1.0)),
-    'crystal_green': ((.4, .85, .2), (.2, .6, .08)), 'crystal_blue': ((.3, .5, .95), (.1, .25, .75)),
-    'cap_purple': ((.55, .14, .66), (.18, .03, .25)), 'mush_stem': ((.82, .77, .72), (0, 0, 0)),
-    'ice': ((.72, .88, 1.0), (.08, .2, .3)), 'ice_deep': ((.3, .55, .92), (.08, .28, .65)), 'frost': ((.92, .96, 1.0), (.05, .06, .07)),
-    'glass': ((.55, .82, .95), (.12, .35, .48)), 'glass_green': ((.55, .9, .35), (.15, .38, .06)), 'glass_purple': ((.78, .45, .95), (.26, .08, .36)),
-    'herb_red': ((.75, .15, .1), (0, 0, 0)), 'herb_orange': ((.85, .45, .1), (0, 0, 0)),
-    'herb_yellow': ((.85, .72, .15), (0, 0, 0)), 'herb_green': ((.28, .5, .16), (0, 0, 0)),
-    'fish': ((.55, .6, .65), (0, 0, 0)), 'meat': ((.4, .12, .1), (0, 0, 0)),
+PALETTE = {  # Valheim-Stil: gedaempfte, dunklere Farben, wenig Leuchten; Zeichen (rune_*) leuchten etwas staerker
+    'stone': ((0.36, 0.35, 0.33), (0.00, 0.00, 0.00)),
+    'stone_dark': ((0.22, 0.21, 0.20), (0.00, 0.00, 0.00)),
+    'wood': ((0.30, 0.20, 0.12), (0.00, 0.00, 0.00)),
+    'wood_dark': ((0.17, 0.12, 0.08), (0.00, 0.00, 0.00)),
+    'wood_pale': ((0.45, 0.38, 0.28), (0.00, 0.00, 0.00)),
+    'iron': ((0.12, 0.12, 0.13), (0.00, 0.00, 0.00)),
+    'copper': ((0.50, 0.30, 0.16), (0.00, 0.00, 0.00)),
+    'rope': ((0.45, 0.38, 0.25), (0.00, 0.00, 0.00)),
+    'leaf': ((0.20, 0.30, 0.12), (0.00, 0.00, 0.00)),
+    'moss': ((0.24, 0.32, 0.14), (0.00, 0.00, 0.00)),
+    'antler': ((0.62, 0.56, 0.42), (0.00, 0.00, 0.00)),
+    'bone': ((0.70, 0.65, 0.50), (0.00, 0.00, 0.00)),
+    'glow_gold': ((0.75, 0.48, 0.16), (0.34, 0.20, 0.05)),
+    'glow_green': ((0.42, 0.58, 0.20), (0.16, 0.30, 0.05)),
+    'glow_pink': ((0.52, 0.55, 0.80), (0.16, 0.20, 0.34)),
+    'glow_blue': ((0.55, 0.72, 0.85), (0.12, 0.24, 0.34)),
+    'crystal_green': ((0.40, 0.55, 0.25), (0.06, 0.14, 0.03)),
+    'crystal_blue': ((0.40, 0.50, 0.66), (0.03, 0.06, 0.14)),
+    'cap_purple': ((0.30, 0.28, 0.44), (0.03, 0.03, 0.08)),
+    'mush_stem': ((0.70, 0.68, 0.62), (0.00, 0.00, 0.00)),
+    'ice': ((0.68, 0.76, 0.82), (0.03, 0.06, 0.09)),
+    'ice_deep': ((0.42, 0.55, 0.68), (0.03, 0.08, 0.15)),
+    'frost': ((0.82, 0.84, 0.86), (0.00, 0.00, 0.00)),
+    'glass': ((0.38, 0.48, 0.54), (0.02, 0.05, 0.08)),
+    'glass_green': ((0.30, 0.40, 0.19), (0.03, 0.07, 0.01)),
+    'glass_purple': ((0.34, 0.32, 0.46), (0.03, 0.03, 0.08)),
+    'herb_red': ((0.48, 0.22, 0.14), (0.00, 0.00, 0.00)),
+    'herb_orange': ((0.55, 0.36, 0.16), (0.00, 0.00, 0.00)),
+    'herb_yellow': ((0.55, 0.48, 0.22), (0.00, 0.00, 0.00)),
+    'herb_green': ((0.30, 0.38, 0.16), (0.00, 0.00, 0.00)),
+    'meat': ((0.50, 0.22, 0.18), (0.00, 0.00, 0.00)),
+    'fish': ((0.55, 0.55, 0.50), (0.00, 0.00, 0.00)),
+    'void': ((0.04, 0.04, 0.05), (0.00, 0.00, 0.00)),
+    'mead': ((0.88, 0.56, 0.14), (0.40, 0.22, 0.04)),
+    'foam': ((0.86, 0.82, 0.70), (0.00, 0.00, 0.00)),
+    'rune_gold': ((0.95, 0.70, 0.25), (0.60, 0.38, 0.08)),
+    'rune_green': ((0.55, 0.85, 0.25), (0.30, 0.60, 0.08)),
+    'rune_pink': ((0.70, 0.65, 0.95), (0.38, 0.34, 0.62)),
+    'rune_blue': ((0.60, 0.85, 1.00), (0.25, 0.50, 0.70)),
 }
 
 def newmodel(name, used):
@@ -32,14 +57,53 @@ def newmodel(name, used):
     for k in used: m.mat(k, *PALETTE[k])
     return m
 
+# ---- Leuchtzeichen je Runenkessel-Stufe (keine echten Runen):
+#      S1 Eberkopf, S2 toter Baum, S3 Seeker, S4 Schneeflocke.  Linienzeichnung im 0..100-Raster (y nach unten).
+def _bez(p0, p1, p2, p3, n=10):
+    return [tuple((1-t)**3*a + 3*(1-t)**2*t*b + 3*(1-t)*t*t*c + t**3*d for a, b, c, d in zip(p0, p1, p2, p3)) for t in [i / n for i in range(n + 1)]]
+
+def _arc(cx, cy, rx, ry, a0, a1, n=14):
+    return [(cx + rx * math.cos(math.radians(a0 + (a1 - a0) * i / n)), cy + ry * math.sin(math.radians(a0 + (a1 - a0) * i / n))) for i in range(n + 1)]
+
+def _sigil_lines(n):
+    L = []; D = []
+    if n == 1:   # Eberkopf mit Hauern
+        L += [[(30, 30), (22, 16), (36, 24)], [(70, 30), (78, 16), (64, 24)],
+              _bez((30, 28), (24, 50), (32, 70), (40, 80)) + [(60, 80)] + _bez((60, 80), (68, 70), (76, 50), (70, 28)), [(30, 28), (70, 28)],
+              _arc(50, 72, 10, 7, 0, 360), _bez((42, 76), (28, 82), (16, 66), (24, 48)), _bez((58, 76), (72, 82), (84, 66), (76, 48)),
+              [(24, 48), (28, 58)], [(76, 48), (72, 58)]]
+        D += [(40, 44, 3), (60, 44, 3), (46, 72, 1.8), (54, 72, 1.8)]
+    elif n == 2:  # toter Baum
+        L += [[(14, 90), (86, 90)], _bez((46, 90), (48, 70), (44, 56), (48, 40)), _bez((54, 90), (54, 70), (58, 56), (54, 40)),
+              _bez((48, 40), (40, 28), (28, 26), (20, 14)), _bez((54, 40), (62, 28), (74, 26), (80, 14)), _bez((51, 40), (50, 28), (54, 20), (50, 8)),
+              [(34, 26), (30, 36)], [(68, 26), (74, 36)], _bez((44, 90), (36, 86), (30, 88), (24, 84)), _bez((56, 90), (64, 86), (70, 88), (76, 84))]
+    elif n == 3:  # Seeker
+        L += [_arc(50, 62, 16, 24, 0, 360), [(50, 40), (50, 86)], _bez((44, 40), (38, 26), (26, 18), (16, 22)), _bez((56, 40), (62, 26), (74, 18), (84, 22)),
+              [(36, 56), (22, 50)], [(36, 66), (20, 68)], [(38, 76), (26, 86)], [(64, 56), (78, 50)], [(64, 66), (80, 68)], [(62, 76), (74, 86)]]
+        D += [(16, 22, 2.5), (84, 22, 2.5)]
+    else:         # Schneeflocke mit Zacken
+        for k in range(6):
+            a = math.radians(60 * k - 90)
+            P = lambda r, o=0: (50 + r * math.cos(a + o), 50 + r * math.sin(a + o))
+            L += [[(50, 50), P(40)], [P(22), P(30, .32)], [P(22), P(30, -.32)], [P(32), P(39, .22)], [P(32), P(39, -.22)]]
+    return L, D
+
 def glyph(m, part, mat, parent, z=.0, s=1.0):
-    """Stilisierte Lebensbaum-Rune aus Quadern."""
-    k = s
-    m.add(part, mat, box((.045, .44, .03)), pos=(0, 0, z), parent=parent + (k,))
-    for sign in (-1, 1):
-        m.add(part, mat, box((.04, .22, .03)), pos=(sign * .075, .1, z), rot=(0, 0, -sign * 42), parent=parent + (k,))
-        m.add(part, mat, box((.04, .16, .03)), pos=(sign * .06, .2, z), rot=(0, 0, -sign * 42), parent=parent + (k,))
-    m.add(part, mat, box((.34, .04, .03)), pos=(0, -.22, z), parent=parent + (k,))
+    """Leuchtzeichen der jeweiligen Stufe (aus dem Teilenamen 'S<n>_...') aus flachen Strichen."""
+    n = int(part[1]) if part[:1] == 'S' and part[1:2].isdigit() else 1
+    if mat.startswith('glow_'): mat = 'rune_' + mat[5:]   # eigenes, helleres Material fuer die Zeichen
+    k = s; sc = .0055; w = .026; d = .03
+    P = lambda q: ((q[0] - 50) * sc, (50 - q[1]) * sc + .04)
+    lines, dots = _sigil_lines(n)
+    for pl in lines:
+        for p, q in zip(pl, pl[1:]):
+            (x0, y0), (x1, y1) = P(p), P(q); ln = math.hypot(x1 - x0, y1 - y0)
+            if ln < 1e-5: continue
+            m.add(part, mat, box((ln + w * .6, w, d)), pos=((x0 + x1) / 2, (y0 + y1) / 2, z),
+                  rot=(0, 0, math.degrees(math.atan2(y1 - y0, x1 - x0))), parent=parent + (k,))
+    for x, y, r in dots:
+        cx, cy = P((x, y))
+        m.add(part, mat, cyl(max(r * sc, .022), d, 8), pos=(cx, cy, z + d / 2), rot=(90, 0, 0), parent=parent + (k,))
 
 def mushroom(m, capp, stemp, spotp, base, R, H, tilt=(0, 0, 0), seed=0, capmat='cap_purple', spotmat='glow_pink'):
     rnd = random.Random(seed)
@@ -82,7 +146,7 @@ def dragon(m, ice, eye, pos, yaw, k=1.0):
 # =================================================================== RUNENKESSEL
 def build_cauldron():
     m = newmodel('VFP_RuneCauldron', ['stone', 'stone_dark', 'wood', 'wood_dark', 'iron', 'rope', 'leaf', 'moss', 'antler', 'bone', 'void',
-        'glow_gold', 'glow_green', 'glow_pink', 'glow_blue', 'crystal_green', 'crystal_blue', 'cap_purple', 'mush_stem', 'ice', 'ice_deep', 'frost'])
+        'glow_gold', 'glow_green', 'glow_pink', 'glow_blue', 'rune_gold', 'rune_green', 'rune_pink', 'rune_blue', 'mead', 'foam', 'crystal_green', 'crystal_blue', 'cap_purple', 'mush_stem', 'ice', 'ice_deep', 'frost'])
     R = random.Random(7)
     PX, PZ, BY = 1.08, -.1, 1.82          # Pfostenabstand, Pfosten-Z, Balkenhoehe
     # ---- Basis (immer sichtbar)
@@ -114,7 +178,7 @@ def build_cauldron():
         glyph(m, P + 'Rune', rune, ((0, .27, 1.2), (-14, 0, 0)), z=.085, s=1.0)
         for i in range(10):
             a = 2 * math.pi * i / 10 + .15
-            m.add(P + 'RingRunes', rune, box((.05, .012, .12)), pos=(.76 * math.cos(a), .03, .76 * math.sin(a)), rot=(0, -math.degrees(a), 0))
+            m.add(P + 'RingRunes', rune.replace('glow_', 'rune_'), box((.05, .012, .12)), pos=(.76 * math.cos(a), .03, .76 * math.sin(a)), rot=(0, -math.degrees(a), 0))
 
     # ---- Stufe 1: Standard (Geweih, Efeu, warme Laternen)
     stage_common(1, 'glow_gold', 'glow_gold')
@@ -299,7 +363,7 @@ def build_barrel():
     m.add('B_Pipes', 'copper', tube(pipe, .05, seg=8, smooth=4))
     m.add('B_Pipes', 'iron', torus(.055, .018, 12, 5), pos=(ox + .15, top + .25, 0))
     m.add('B_Pipes', 'iron', torus(.055, .018, 12, 5), pos=(ox + .6, top + .62, 0), rot=(0, 0, 90))
-    m.add('B_Pipes', 'iron', torus(.055, .018, 12, 5), pos=(ox + 1.12, top + .0 + .85, 0))
+    m.add('B_Pipes', 'iron', torus(.055, .018, 12, 5), pos=(ox + 1.12, top + .2, 0))
     m.add('B_Pipes', 'copper', tube([(ox + .15, top - .02, 0), (ox + .15, top + .2, 0)], .08, seg=8))
     m.add('B_Pipes', 'copper', sphere(.075, 8, 6), pos=(ox + .15, top, 0))
     m.add('B_Pipes', 'copper', tube([(ox + .5, top + .12, .12), (ox + .5, top + .6, .12), (ox + .62, top + .65, .12)], .03, seg=6, smooth=2))
@@ -307,6 +371,30 @@ def build_barrel():
     for y in (.12, .4):
         m.add('B_Tank', 'iron', torus(.19, .022, 16, 5), pos=(ox + 1.12, y, 0))
     m.add('B_Tank', 'iron', cone(.21, .12, 12), pos=(ox + 1.12, .5, 0))
+    # ---- Gaerzustaende (vom Fermenter ein-/ausgeblendet): F_Top = befuellt/verschlossen,
+    #      F_Fermenting = gaert, F_Ready = fertig zum Abzapfen
+    lt = y0 + H + .06
+    m.add('F_Top', 'wood', cyl(.07, .05, 10), pos=(ox - .12, lt, -.1))                      # Spund
+    m.add('F_Top', 'wood_dark', box((.72, .05, .09)), pos=(ox, lt + .025, .0))             # Querbalken
+    m.add('F_Top', 'rope', torus(.4, .018, 24, 5), pos=(ox, y0 + H + .03, 0))               # Seil um den Deckel
+    R0 = random.Random(77)
+    for a in np.linspace(0, 6.28, 22, endpoint=False):                                         # Schaumkranz am Deckelrand
+        rr = .4 + R0.uniform(-.01, .03)
+        m.add('F_Fermenting', 'foam', sphere(R0.uniform(.035, .06), 6, 4), pos=(ox + rr * math.cos(a), y0 + H + .01, rr * math.sin(a)), scl=(1, .7, 1))
+    for i in range(6):                                                                         # Blasen am Spund und am Rohr
+        m.add('F_Fermenting', 'foam', sphere(.025 + .01 * (i % 3), 6, 4), pos=(ox - .12 + R0.uniform(-.05, .05), lt + .06 + .05 * i, -.1 + R0.uniform(-.04, .04)))
+    for i in range(4):
+        m.add('F_Fermenting', 'foam', sphere(.03, 6, 4), pos=(ox + 1.12 + R0.uniform(-.04, .04), .62 + .06 * i, R0.uniform(-.04, .04)))
+    tz = .67
+    m.add('F_Ready', 'mead', sphere(.03, 6, 5), pos=(ox, y0 + .33, tz), scl=(1, 1.5, 1))                  # Tropfen am Hahn
+    m.add('F_Ready', 'mead', sphere(.022, 6, 5), pos=(ox, y0 + .2, tz), scl=(1, 1.4, 1))
+    my = .0
+    m.add('F_Ready', 'wood', lathe([(0, 0), (.09, 0), (.1, .02), (.1, .2), (.085, .2), (.085, .03), (0, .03)], 12), pos=(ox, my, tz))   # Krug
+    m.add('F_Ready', 'iron', torus(.1, .012, 12, 4), pos=(ox, my + .06, tz))
+    m.add('F_Ready', 'iron', torus(.1, .012, 12, 4), pos=(ox, my + .16, tz))
+    m.add('F_Ready', 'wood', torus(.05, .015, 10, 4), pos=(ox + .12, my + .11, tz), rot=(90, 0, 0))   # Henkel
+    m.add('F_Ready', 'mead', cyl(.086, .015, 12), pos=(ox, my + .17, tz))                    # Met im Krug
+    m.add('F_Ready', 'mead', cyl(.17, .02, 12), pos=(ox + 1.12, .505, 0))                    # Met im Auffangtank
     for n in (2, 3, 4):
         P = 'S%d_' % n; T = THEME[n]; R = random.Random(100 + n)
         glyph(m, P + 'Rune', T['rune'], ((ox, y0 + .55, rad(.55) + .02), (0, 0, 0)), s=.8)
@@ -450,10 +538,37 @@ def sheet(path, tiles, size=520):
         im.paste(tile, (i * size, 40)); d.text((i * size + 14, 6), title, fill=(230, 210, 150), font=font)
     im.save(path)
 
+
+# =================================================================== METFAESSCHEN (Gruppengetraenke, auf dem Servierbrett)
+def build_keg():
+    m = allmats('VFP_Keg')
+    L, cy = .62, .36
+    def rad(t): return .2 + .05 * math.sin(math.pi * t)
+    prof = [(0, 0), (rad(0), 0), None] + [(rad(i / 10), L * i / 10) for i in range(11)] + [None, (rad(1), L), (0, L)]
+    m.add('K_Barrel', 'wood', lathe(prof, 14), pos=(-L / 2, cy, 0), rot=(0, 0, -90))
+    for t in (.1, .9):
+        m.add('K_Hoops', 'iron', torus(rad(t) + .005, .018, 20, 5), pos=(-L / 2 + L * t, cy, 0), rot=(0, 0, 90))
+    for t in (.26, .74):   # farbige Baender in der Getraenkefarbe (im Spiel eingefaerbt)
+        m.add('K_Bands', 'mead', torus(rad(t) + .006, .02, 20, 5), pos=(-L / 2 + L * t, cy, 0), rot=(0, 0, 90))
+    for x in (-L / 2 - .005, L / 2 + .005):
+        m.add('K_Ends', 'wood_dark', cyl(.2, .012, 14), pos=(x, cy, 0), rot=(0, 0, 90))
+    m.add('K_Tap', 'copper', cyl(.022, .12, 8), pos=(L / 2 + .06, cy - .05, 0), rot=(0, 0, 90))
+    m.add('K_Tap', 'copper', box((.02, .06, .02)), pos=(L / 2 + .11, cy - .08, 0))
+    m.add('K_Bung', 'wood_dark', cyl(.035, .03, 8), pos=(0, cy + rad(.5) - .005, 0))
+    for x in (-.2, .2):   # Boecke
+        for z in (-.13, .13):
+            m.add('K_Stand', 'wood_dark', box((.05, .26, .05)), pos=(x, .13, z), rot=(z * 120, 0, 0))
+        m.add('K_Stand', 'wood', box((.06, .05, .34)), pos=(x, .2, 0))
+    for i, (x, z, a) in enumerate(((.38, .2, 25), (-.36, .22, -30))):   # Trinkhoerner
+        pts = [(x, .05, z), (x + .06 * math.cos(math.radians(a)), .08, z + .06 * math.sin(math.radians(a))), (x + .14 * math.cos(math.radians(a)), .16, z + .12 * math.sin(math.radians(a)))]
+        m.add('K_Horns', 'antler', tube(pts, [.012, .03, .05], seg=8, smooth=3))
+        m.add('K_Horns', 'mead', sphere(.04, 8, 4), pos=pts[-1], scl=(1, .25, 1))
+    return m
+
 if __name__ == '__main__':
     previews = '--no-preview' not in sys.argv
     models = [build_cauldron(), build_barrel(), build_rack(), build_distillery()]
-    for m in models:
+    for m in models + [build_keg()]:
         n = m.export(OUT); print('%-22s %3d Teile %6d Dreiecke' % (m.name, len(m.parts), n))
     if previews:
         c, b, r, d = models

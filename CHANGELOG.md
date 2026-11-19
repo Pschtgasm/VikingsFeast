@@ -1,5 +1,45 @@
 # Changelog
 
+## 1.5.0
+- New: drinks. 7 single meads and 4 mead kegs for groups, each with a small effect that Valheim does not have.
+- Single meads (6 bottles, 10 minutes): make the mead base at the vanilla Mead Ketill and ferment it in the vanilla Fermenter or in the Fermentation Barrel.
+  - Fisher's brew: fish bite more readily
+  - Master cook's brew: eaten food lasts 10% longer
+  - Hunter's brew: bows and crossbows draw 10% faster
+  - Bog bitter: no wet effect
+  - Helmsman's grog: side wind drives the ship 20% better (when steering)
+  - Gardener's mead: 20% chance of an extra yield when harvesting and picking
+  - Galdr mead: spells cost 10% less eitr
+- Mead kegs (10 servings, 20 minutes): make the keg base at the Runic Cauldron (station level 2), ferment it in the Fermentation Barrel and place the keg with the Serving Tray.
+  - Shield brothers' mead: -5% damage taken while a fellow player is nearby
+  - Battle cry mead: +5% damage while a fellow player is nearby
+  - Skald's brew: skills rise 10% faster
+  - Rower's keg: +3% sailing speed per player on board (max +12%)
+  - Feast bonus: a bit stronger with 3 or more players nearby. Rest bonus: you get rested faster.
+- Every single mead has its own bottle model in its colour (on the ground and on item stands).
+- At most 2 drinks are active at the same time; drinking a third ends the oldest.
+- Runic Cauldron: the recipe list is split into two collapsible groups, Food and Mead (click the heading to open or close; config `[Drinks] RecipeGroups`).
+- The Fermentation Barrel can now ferment mead (also without a roof), shows its state (empty, fermenting with foam, ready with mead at the tap) and the remaining time when you look at it (config `[Drinks] ShowFermentTime`, default on).
+- Placed mead kegs show their symbol and two coloured bands on the barrel; drinking no longer plays the eating sound. New drinking sounds: single meads end with a burp, kegs play drinking + burp (config `DrinkSound`, `KegSound`: 0 = off, 1 = burp, 2 = drinking + burp).
+- New config sections `[Drinks]` and `[Drink - <ID>]`: drinks on/off, ingredients, effect strength, duration, fermentation time, Mead Ketill / Runic Cauldron / vanilla Fermenter options.
+- The mead bases show the effect of their mead in the tooltip.
+- Fixed a floating iron ring above the collecting tank of the Fermentation Barrel.
+
+## 1.4.7
+- New food icons for all 24 dishes in Valheim's style: muted colours, fewer details, no glow.
+- New build menu icons for the Runic Cauldron and its three upgrades, rendered from the actual models.
+- Runic Cauldron and upgrades now use Valheim-like colours: darker wood, iron and stone, aged bone, cloudy glass and crystals, paler ice. The Mistlands stage is blue-violet instead of bright pink.
+- Lanterns, crystals and glass only glow softly now, the same in every stage.
+- The rune on the cauldron and the upgrades is replaced by a glowing sign for each stage: boar head (Standard), dead tree (Swamp), Seeker (Mistlands), snowflake (Deep North). The signs glow a bit brighter than the lanterns.
+- New config option `[General] CookingStation`: cook the dishes at the Runic Cauldron (`RuneCauldron`, default), at the vanilla Cauldron (`Cauldron`) or at both (`Both`). At the vanilla Cauldron the dishes need the same station level, reached with the vanilla cauldron upgrades.
+
+## 1.4.6
+- 3 seasonal dishes that appear together with Valheim's seasonal events and disappear afterwards:
+  Midsummer Berry Cake (Midsummer), Grinning Turnip Broth (Halloween), Yule Roast (Yule). Cooked dishes stay edible after the event.
+- Seasonal dishes are 95-105 % of the best vanilla food of their biome (values can be changed in the config).
+- Each seasonal dish has a small 10-minute effect: Midsummer joy (stamina regen +10 %), Ghostly vigor (health regen +10 %), Yule warmth (slightly less frost damage).
+- New config options `[Seasonal] Enabled` and `AlwaysAvailable` (cook them all year).
+
 ## 1.4.5
 - Rebalanced all dishes: their main stat is now 80-110 % of the best vanilla food of the same biome, based on how hard the ingredients are to get. Each dish has a clear focus (health, stamina or eitr).
 - Dishes that need special fish (Trollfish, Northern Salmon, Pufferfish, Anglerfish) are at the upper end (about 110 %), because those fish are harder to get.

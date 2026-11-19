@@ -1,0 +1,28 @@
+newmtl Liquid
+Kd 0.900 0.600 0.200
+Ke 0.200 0.100 0.000
+
+newmtl LiquidTop
+Kd 1.000 0.750 0.350
+Ke 0.300 0.150 0.000
+
+newmtl Glass
+Kd 0.750 0.820 0.850
+Ke 0.000 0.000 0.000
+
+newmtl Cork
+Kd 0.620 0.450 0.270
+Ke 0.000 0.000 0.000
+
+newmtl Rope
+Kd 0.780 0.660 0.440
+Ke 0.000 0.000 0.000
+
+newmtl Label
+Kd 0.930 0.860 0.680
+Ke 0.000 0.000 0.000
+
+newmtl LabelRing
+Kd 0.280 0.160 0.080
+Ke 0.000 0.000 0.000
+

@@ -40,7 +40,7 @@ This is the support repository for **Viking's Feast**.
 
 - **11 drinks**: 7 single meads and 4 mead kegs for groups, with small effects Valheim does not have
 - **3 feast platters** for groups, placed with the Serving Tray
-- **24 new recipes** covering Meadows, Black Forest, Swamp, Mountains, Plains, Mistlands, Ashlands and the Deep North
+- **24 new recipes** plus **3 seasonal dishes** for Valheim's Midsummer, Halloween and Yule events covering Meadows, Black Forest, Swamp, Mountains, Plains, Mistlands, Ashlands and the Deep North
 - **Runic Cauldron**: a new cooking station with its own 3D model, build menu icon and a **built-in fire** that works like a campfire (add wood, burns down, goes out)
 - **Four visual stages**: the cauldron changes its look with every upgrade (Standard → Swamp → Mistlands → Deep North)
 - **Three station upgrades**, each with its own custom model that also changes with the cauldron stage
@@ -99,6 +99,15 @@ Every dish makes **two portions** by default. Deep North dishes require the **Ic
 |  | Moose Burger | 110 | 35 | – | 4 | Moose meat 2, Barley flour 4, Onion 2, Lingonberries 3 |
 |  | Northern Lights Oat Porridge | 35 | 112 | – | 4 | Oats 8, Lingonberries 5, Oat milk 4, Poteitr 3 |
 
+### 🎉 Seasonal *(only during Valheim's Midsummer, Halloween and Yule events)*
+| Dish | ❤️ Health | ⚡ Stamina | 🔮 Eitr | Lvl | Ingredients |
+|---|:-:|:-:|:-:|:-:|---|
+| Midsummer Berry Cake | 14 | 45 | – | 1 | Raspberries 6, Blueberries 6, Honey 4, Dandelion 3 |
+| Grinning Turnip Broth | 18 | 54 | – | 2 | Turnip 4, Ooze 2, Yellow mushroom 2, Woodland herb blend 1 |
+| Yule Roast | 45 | 14 | – | 1 | Deer meat 3, Raspberries 4, Honey 2, Carrot 2 |
+
+The seasonal dishes appear at the Runic Cauldron together with Valheim's own seasonal content and disappear again when the event ends. Dishes you have already cooked stay edible. With `[Seasonal] AlwaysAvailable = true` they can be cooked all year.
+
 ### 🍖 Feast platters
 Made at the **Food Preparation Table** (or the Runic Cauldron, see config) and placed with the vanilla **Serving Tray**. Everyone at the table can eat: 10 servings, 50 minutes each. Unlike the balanced vanilla feasts, each platter has a focus: Bog Feast health, Golden Harvest Table stamina, Northern Lights Banquet eitr. They look like the vanilla feasts, slightly tinted: greenish, golden and frosty blue.
 
@@ -116,6 +125,9 @@ Made at the **Food Preparation Table** (or the Runic Cauldron, see config) and p
 | Anglerfish Mist Soup | Eitr regeneration +10 % |
 | Ember Herb Soup | Slightly less fire damage (−25 %) |
 | Northern Lights Oat Porridge | Stamina regeneration +10 % |
+| Midsummer Berry Cake 🎉 | Stamina regeneration +10 % |
+| Grinning Turnip Broth 🎉 | Health regeneration +10 % |
+| Yule Roast 🎉 | Slightly less frost damage (−25 %) |
 
 The effects are intentionally weaker than vanilla resistance meads and can be switched off in the config.
 
@@ -154,12 +166,14 @@ Kegs: a bit stronger with 3+ players nearby, and you get rested faster.
 `BepInEx/config/de.vikingfoodplus.mod.cfg`
 
 - Enable or disable the whole mod or individual dishes
+- Where the dishes are cooked (`General > CookingStation`): `RuneCauldron` (default), `Cauldron` (vanilla cauldron) or `Both`
 - Health, stamina, eitr, duration and regen per dish
 - Ingredients (`Prefab:count`, comma-separated) and portions
 - Build cost of the Ice Distillery (`Piece - IceDistillery > Requirements`)
 - Size of the upgrades (`Piece - Extensions > Scale`, default `0.75`) and how far from the cauldron they still count (`MaxDistance`, default `10` m)
 - Feast platters on/off (`Feasts > Enabled`) and where they are made (`Feasts > Station`: `PrepTable` (default) or `RuneCauldron`)
 - Drinks (`Drinks`, `Drink - <ID>`): on/off, ingredients, strength, duration, fermentation time, remaining time at the barrel (`ShowFermentTime`, default on), drinking sounds (`DrinkSound`, `KegSound`), Mead Ketill / Runic Cauldron / vanilla Fermenter
+- Seasonal dishes on/off (`Seasonal > Enabled`) and all year (`Seasonal > AlwaysAvailable`)
 - Small food effects on/off (`General > FoodBuffs`, default `true`)
 - Cooking time at the Runic Cauldron (`Piece - RuneCauldron > CookTime`, default `0` = vanilla)
 - Built-in cauldron fire on/off (`Piece - RuneCauldron > IntegratedFire`, default `true`), its height (`FireHeightOffset`) and its smoke (`FireSmoke`)
@@ -191,7 +205,7 @@ Multiplayer: install the mod on **all clients and the server**.
 - **Runen-Trockengestell** → Kochstufe 3
 - **Eisdestillerie** → Kochstufe 4, schaltet die Gerichte des Nordens frei
 
-Dazu kommen drei Festmahl-Platten für Gruppen (Moorschmaus, Goldene Erntetafel, Nordlicht-Festtafel), die man mit dem Servierbrett aufstellt. Fünf Gerichte geben zusätzlich einen kleinen Effekt für 10 Minuten, etwa etwas Frost- oder Feuerschutz. Alle Bauteile haben eigene 3D-Modelle, jedes Gericht ein eigenes Icon. Werte, Zutaten und Portionen lassen sich in der Config anpassen. Das Spiel ist komplett auf Deutsch und Englisch übersetzt.
+Neu sind 11 Getränke: 7 Einzelmets aus Metkessel und Fermenter und 4 Metfässchen für Gruppen aus Runenkessel und Gärfass. Dazu kommen drei Saisongerichte zu Mittsommer, Halloween und Julfest sowie drei Festmahl-Platten für Gruppen (Moorschmaus, Goldene Erntetafel, Nordlicht-Festtafel), die man mit dem Servierbrett aufstellt. Fünf Gerichte geben zusätzlich einen kleinen Effekt für 10 Minuten, etwa etwas Frost- oder Feuerschutz. Alle Bauteile haben eigene 3D-Modelle, jedes Gericht ein eigenes Icon. Werte, Zutaten und Portionen lassen sich in der Config anpassen. Das Spiel ist komplett auf Deutsch und Englisch übersetzt.
 
 ---
 
@@ -210,6 +224,11 @@ Dazu kommen drei Festmahl-Platten für Gruppen (Moorschmaus, Goldene Erntetafel,
 Build on Windows: copy `local.props.example` to `local.props`, set your `BepInEx.dll` path, then run `Build-Windows.bat`. Requires the .NET SDK, Valheim and Jötunn.
 
 ---
+
+## 🔊 Credits
+
+- Burp sound: "rulps" by tullpen, [freesound.org/s/719593](https://freesound.org/s/719593/)
+- Drinking sound: "Liquid Drink" by SilverIllusionist, [freesound.org/s/411172](https://freesound.org/s/411172/)
 
 ## 📝 Changelog
 

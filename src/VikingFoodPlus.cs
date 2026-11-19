@@ -12,9 +12,9 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.4.5")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.5.0")]
     [BepInDependency(Jotunn.Main.ModGuid)]
-    public class VikingFoodPlus : BaseUnityPlugin
+    public partial class VikingFoodPlus : BaseUnityPlugin
     {
         public const string Guid = "de.vikingfoodplus.mod";
         private const string Station = "VFP_RuneCauldron";
@@ -29,6 +29,9 @@ namespace VikingFoodPlus
         private ConfigEntry<bool> fireSmoke;
         private ConfigEntry<bool> feastsEnabled;
         private ConfigEntry<string> feastStation;
+        private ConfigEntry<string> cookingStation;
+        private ConfigEntry<bool> seasonalEnabled;
+        private ConfigEntry<bool> seasonalAlways;
         private readonly Dictionary<string, ConfigEntry<float>> health = new Dictionary<string, ConfigEntry<float>>();
         private readonly Dictionary<string, ConfigEntry<float>> eitr = new Dictionary<string, ConfigEntry<float>>();
         private readonly Dictionary<string, ConfigEntry<float>> stamina = new Dictionary<string, ConfigEntry<float>>();
@@ -65,7 +68,18 @@ namespace VikingFoodPlus
             new FoodSpec("HeartyFlatbread","Herzhaftes Fladenbrot","Hearty flatbread","Bread",35,70,2,"BarleyFlour:10,Onion:3,LoxMeat:2",0,1800,3),
             new FoodSpec("MooseBurger","Elchburger","Moose burger","CookedLoxMeat",110,35,4,"MooseMeat:2,BarleyFlour:4,Onion:2,Lingonberry:3",0,1800,5),
             // Hoher-Norden-IDs gegen Valheim 1.0 geprueft (FrozenFuel = Fluessiger Frost, Oat = Hafer).
-            new FoodSpec("NorthernOatPorridge","Nordlicht-Haferbrei","Northern lights oat porridge","QueensJam",35,112,4,"Oat:8,Lingonberry:5,OatMilk:4,Poteitr:3")
+            new FoodSpec("NorthernOatPorridge","Nordlicht-Haferbrei","Northern lights oat porridge","QueensJam",35,112,4,"Oat:8,Lingonberry:5,OatMilk:4,Poteitr:3"),
+            // Saisongerichte (95-105 % der Valheim-Bestwerte): nur waehrend Valheims Mittsommer-, Halloween- und Julfest-Zeit (siehe Seasons)
+            new FoodSpec("MidsummerCake","Mittsommer-Beerenkuchen","Midsummer berry cake","QueensJam",14,45,1,"Raspberry:6,Blueberries:6,Honey:4,Dandelion:3"),
+            new FoodSpec("TurnipGhostSoup","Grinsende Rübenbrühe","Grinning turnip broth","TurnipStew",18,54,2,"Turnip:4,Ooze:2,MushroomYellow:2,SpiceForests:1"),
+            new FoodSpec("YuleRoast","Julfest-Braten","Yule roast","CookedDeerMeat",45,14,1,"DeerMeat:3,Raspberry:4,Honey:2,Carrot:2")
+        };
+
+        // Saison je Gericht: Schluesselwoerter der passenden Vanilla-SeasonalItemGroup
+        private static readonly Dictionary<string, string[]> Seasons = new Dictionary<string, string[]> {
+            {"MidsummerCake",   new[] { "maypole", "midsummer" }},
+            {"TurnipGhostSoup", new[] { "pointy", "jack", "halloween", "pumpkin" }},
+            {"YuleRoast",       new[] { "xmas", "yule", "christmas", "mistletoe", "garland", "gift" }}
         };
 
         // Eigene Beschreibung je Gericht im Valheim-Stil (kurz): Id -> { Deutsch, Englisch }
@@ -93,6 +107,9 @@ namespace VikingFoodPlus
             {"TickSud", new[] { "Besser nicht fragen, was drin ist.", "Better not ask what's in it." }},
             {"HeartyFlatbread", new[] { "Knusprig, herzhaft und gut für unterwegs.", "Crispy, hearty and good for the road." }},
             {"MooseBurger", new[] { "Ein Elch zwischen zwei Broten.", "A moose between two breads." }},
+            {"MidsummerCake", new[] { "Schmeckt nach langen Tagen und kurzen Nächten.", "Tastes of long days and short nights." }},
+            {"TurnipGhostSoup", new[] { "Die Rübe grinst zurück.", "The turnip grins back." }},
+            {"YuleRoast", new[] { "Ein Festbraten für die längste Nacht des Jahres.", "A feast roast for the longest night of the year." }},
             {"NorthernOatPorridge", new[] { "Wärmt von innen, wenn draußen alles friert.", "Warms you inside when everything outside freezes." }}
         };
 
@@ -103,7 +120,10 @@ namespace VikingFoodPlus
             {"FrostFishRoast",      new BuffSpec("frost",  "Frost",  0f, 0f)},
             {"AnglerMistSoup",      new BuffSpec("mind",   null,     0f, 1.1f)},
             {"EmberHerbSoup",       new BuffSpec("fire",   "Fire",   0f, 0f)},
-            {"NorthernOatPorridge", new BuffSpec("north",  null,     1.1f, 0f)}
+            {"NorthernOatPorridge", new BuffSpec("north",  null,     1.1f, 0f)},
+            {"MidsummerCake",       new BuffSpec("summer", null,     1.1f, 0f)},
+            {"TurnipGhostSoup",     new BuffSpec("ghost",  null,     0f,   0f, 1.1f)},
+            {"YuleRoast",           new BuffSpec("yule",   "Frost",  0f,   0f)}
         };
         private const float BuffDuration = 600f;
 
@@ -138,7 +158,7 @@ namespace VikingFoodPlus
             // Neue Balance (1.4.5, 80-110 % der Valheim-Bestwerte): Leben/Ausdauer/Eitr einmalig auf die neuen Standardwerte setzen,
             // sonst behalten bestehende Configs die alten, zu starken Werte.
             var balance = Config.Bind("General", "BalanceVersion", 0, "Intern: Stand der Gericht-Werte. Nicht aendern.");
-            if (balance.Value < 3)
+            if (balance.Value < 4)
             {
                 foreach (var food in Foods)
                 {
@@ -146,7 +166,7 @@ namespace VikingFoodPlus
                     stamina[food.Id].Value = (float)stamina[food.Id].DefaultValue;
                     eitr[food.Id].Value = (float)eitr[food.Id].DefaultValue;
                 }
-                balance.Value = 3;
+                balance.Value = 4;
             }
             distilleryCost = Config.Bind("Piece - IceDistillery", "Requirements", "Crystal:20,DragonTear:5,BlackMetalScrap:10,YggdrasilWood:2",
                 "Baukosten der Eisdestillerie als Prefab:Anzahl, kommagetrennt. Unbekannte Prefabs werden uebersprungen (Warnung im Log). Namen per Konsole 'spawn' + Autovervollstaendigung pruefen; Neustart noetig.");
@@ -164,12 +184,23 @@ namespace VikingFoodPlus
                 new ConfigDescription("Kochzeit am Runenkessel in Sekunden. 0 = wie in Valheim (Standard). Groessere Werte verlaengern den Fortschrittsbalken beim Herstellen. Sofort wirksam.", new AcceptableValueRange<float>(0f, 15f)));
             fireSmoke = Config.Bind("Piece - RuneCauldron", "FireSmoke", true,
                 "Rauch des eingebauten Kesselfeuers (wie beim Lagerfeuer). false = Feuer ohne Rauch. Neustart noetig.");
+            cookingStation = Config.Bind("General", "CookingStation", "RuneCauldron",
+                new ConfigDescription("Wo die Gerichte gekocht werden: RuneCauldron = nur am Runenkessel (Standard), Cauldron = nur am normalen Valheim-Kessel, Both = an beiden. Die benoetigte Kochstufe gilt auch am Valheim-Kessel (dort ueber dessen eigene Erweiterungen). Neustart noetig.",
+                new AcceptableValueList<string>("RuneCauldron", "Cauldron", "Both")));
             feastsEnabled = Config.Bind("Feasts", "Enabled", true,
                 "Festmahl-Platten (Moorschmaus, Goldene Erntetafel, Nordlicht-Festtafel). Werden mit dem Servierbrett aufgestellt. Neustart noetig.");
             feastStation = Config.Bind("Feasts", "Station", "PrepTable",
                 new ConfigDescription("Wo die Festmahl-Platten hergestellt werden: PrepTable = Zubereitungstisch (wie in Valheim), RuneCauldron = Runenkessel (Stufe 2/3/4). Neustart noetig.",
                 new AcceptableValueList<string>("PrepTable", "RuneCauldron")));
+            seasonalEnabled = Config.Bind("Seasonal", "Enabled", true,
+                "Saisongerichte (Mittsommer-Beerenkuchen, Grinsende Rübenbrühe, Julfest-Braten). Neustart noetig.");
+            seasonalAlways = Config.Bind("Seasonal", "AlwaysAvailable", false,
+                "true = Saisongerichte das ganze Jahr kochbar. false = nur waehrend Valheims Mittsommer-, Halloween- und Julfest-Zeit. Neustart noetig.");
+            BindDrinkConfig();
             if (!enabledMod.Value) return;
+            if (drinksEnabled.Value) ApplyDrinkStatics();
+            if (drinksEnabled.Value && recipeGroups.Value) ApplyRecipeGroups();
+            ItemManager.OnItemsRegistered += AssignSeasonalRecipes;
             PrefabManager.OnVanillaPrefabsAvailable += Register;
         }
 
@@ -185,7 +216,8 @@ namespace VikingFoodPlus
         {
             PrefabManager.OnVanillaPrefabsAvailable -= Register;
             try { RegisterStation(); } catch (Exception ex) { Logger.LogError("Runenkessel: " + ex); }
-            try { RegisterExtension("VFP_FermentBarrel", "piece_workbench_ext1", "Gärfass", "Fermentation barrel", 2,
+            // Gaerfass: mit Getraenken ein Klon des Valheim-Fermenters (kann gaeren), sonst wie bisher
+            try { RegisterExtension("VFP_FermentBarrel", drinksEnabled.Value && PrefabManager.Instance.GetPrefab("fermenter") != null ? "fermenter" : "piece_workbench_ext1", "Gärfass", "Fermentation barrel", 2,
                 new[] { new RequirementConfig("FineWood", 15), new RequirementConfig("Iron", 8), new RequirementConfig("ElderBark", 5) }); }
             catch (Exception ex) { Logger.LogError("Gärfass: " + ex); }
             try { RegisterExtension("VFP_RuneDryingRack", "piece_workbench_ext1", "Runen-Trockengestell", "Runic drying rack", 3,
@@ -195,6 +227,7 @@ namespace VikingFoodPlus
             catch (Exception ex) { Logger.LogError("Eisdestillerie: " + ex); }
             foreach (var food in Foods)
             {
+                if (Seasons.ContainsKey(food.Id) && !seasonalEnabled.Value) continue;
                 try { if (foodEnabled[food.Id].Value) RegisterFood(food); }
                 catch (Exception ex) { Logger.LogWarning("Rezept " + food.Id + " übersprungen: " + ex.Message); }
             }
@@ -203,10 +236,15 @@ namespace VikingFoodPlus
                 try { RegisterFeasts(); }
                 catch (Exception ex) { Logger.LogError("Festmahle: " + ex); }
             }
+            if (drinksEnabled.Value)
+            {
+                try { RegisterDrinks(); }
+                catch (Exception ex) { Logger.LogError("Getraenke: " + ex); }
+            }
             try { if (foodEnabled["HeartyFlatbread"].Value) RegisterFlatbreadBaking(); }
             catch (Exception ex) { Logger.LogError("Fladenbrot-Kochofen: " + ex); }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.4.5 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.5.0 registration complete.");
         }
 
         private void RegisterStation()
@@ -385,6 +423,11 @@ namespace VikingFoodPlus
                 var f = typeof(SE_Stats).GetField("m_staminaRegenMultiplier", flags);
                 if (f != null) f.SetValue(se, buff.StaminaRegen);
             }
+            if (buff.HealthRegen > 0f)
+            {
+                var f = typeof(SE_Stats).GetField("m_healthRegenMultiplier", flags);
+                if (f != null) f.SetValue(se, buff.HealthRegen);
+            }
             if (buff.EitrRegen > 0f)
             {
                 var f = typeof(SE_Stats).GetField("m_eitrRegenMultiplier", flags);
@@ -403,9 +446,77 @@ namespace VikingFoodPlus
         private sealed class BuffSpec
         {
             public readonly string Key, DamageType;
-            public readonly float StaminaRegen, EitrRegen;
-            public BuffSpec(string key, string damageType, float staminaRegen, float eitrRegen)
-            { Key = key; DamageType = damageType; StaminaRegen = staminaRegen; EitrRegen = eitrRegen; }
+            public readonly float StaminaRegen, EitrRegen, HealthRegen;
+            public BuffSpec(string key, string damageType, float staminaRegen, float eitrRegen, float healthRegen = 0f)
+            { Key = key; DamageType = damageType; StaminaRegen = staminaRegen; EitrRegen = eitrRegen; HealthRegen = healthRegen; }
+        }
+
+        // ---------------- Saisongerichte ----------------
+
+        /// <summary>Haengt die Saisonrezepte in Valheims SeasonalItemGroups (am Player-Prefab) ein.
+        /// Valheim zeigt deaktivierte Rezepte, die in der Gruppe der aktuellen Saison stehen.</summary>
+        private void AssignSeasonalRecipes()
+        {
+            if (!seasonalEnabled.Value || seasonalAlways.Value || ObjectDB.instance == null) return;
+            try
+            {
+                var player = PrefabManager.Instance.GetPrefab("Player");
+                var groupsField = typeof(Player).GetField("m_seasonalItemGroups", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                var comp = player != null ? player.GetComponent<Player>() : null;
+                var groups = comp != null && groupsField != null ? groupsField.GetValue(comp) as IEnumerable : null;
+                if (groups == null) { Logger.LogWarning("Saisongerichte: Valheims Saison-Gruppen nicht gefunden, Gerichte ganzjaehrig"); EnableSeasonalRecipes(); return; }
+                foreach (var kv in Seasons)
+                foreach (var recipe in FindRecipes("VFP_" + kv.Key))
+                {
+                    SeasonalItemGroup target = null;
+                    foreach (var g in groups)
+                    {
+                        var group = g as SeasonalItemGroup;
+                        if (group != null && GroupMatches(group, kv.Value)) { target = group; break; }
+                    }
+                    if (target == null)
+                    {
+                        Logger.LogWarning("Saisongericht " + kv.Key + ": passende Saison nicht gefunden, ganzjaehrig verfuegbar");
+                        recipe.m_enabled = true;
+                        continue;
+                    }
+                    target.Recipes.RemoveAll(r => r == null || r == recipe || r.name == recipe.name);
+                    target.Recipes.Add(recipe);
+                }
+            }
+            catch (Exception ex) { Logger.LogWarning("Saisongerichte: " + ex.Message); EnableSeasonalRecipes(); }
+        }
+
+        private void EnableSeasonalRecipes()
+        {
+            foreach (var id in Seasons.Keys) foreach (var r in FindRecipes("VFP_" + id)) r.m_enabled = true;
+        }
+
+        private List<Recipe> FindRecipes(string itemName)
+        {
+            var list = new List<Recipe>();
+            foreach (var r in ObjectDB.instance.m_recipes)
+                if (r != null && r.m_item != null && r.m_item.name == itemName) list.Add(r);
+            return list;
+        }
+
+        private bool GroupMatches(SeasonalItemGroup group, string[] keywords)
+        {
+            var names = new List<string>();
+            if (group.Recipes != null)
+                foreach (var r in group.Recipes)
+                    if (r != null) { names.Add(r.name); if (r.m_item != null) names.Add(r.m_item.name); }
+            if (group.Pieces is IEnumerable pieces)
+                foreach (var p in pieces)
+                    if (p is UnityEngine.Object o && o != null) names.Add(o.name);
+            names.Add(group.name);
+            foreach (var n in names)
+            {
+                var lower = (n ?? "").ToLowerInvariant();
+                if (lower.StartsWith("vfp_")) continue;
+                foreach (var k in keywords) if (lower.Contains(k)) return true;
+            }
+            return false;
         }
 
         // ---------------- Festmahl-Platten ----------------
@@ -663,6 +774,7 @@ namespace VikingFoodPlus
             catch (Exception ex) { Logger.LogWarning("Baumenü-Icon " + id + ": " + ex.Message); }
             // Workbench extension already contains Valheim's native StationExtension component.
             // Point it to our cauldron prefab. Reflection avoids relying on field visibility in game versions.
+            if (go.GetComponent<Fermenter>() != null) PrepareBarrelFermenter(go);
             var ext = go.GetComponent<StationExtension>();
             if (ext == null) throw new Exception("StationExtension missing");
             // Groesserer Wirkungsabstand zum Kessel (naeher platzieren funktioniert weiterhin).
@@ -680,6 +792,10 @@ namespace VikingFoodPlus
             // Disable cloned workbench visuals while retaining the extension mechanics.
             foreach (var renderer in go.GetComponentsInChildren<Renderer>(true)) renderer.enabled = false;
             Decorate(go, style);
+            if (go.GetComponent<Fermenter>() != null)
+            {
+                try { SetupBarrelStates(go); } catch (Exception ex) { Logger.LogWarning("Gaerfass-Zustaende: " + ex.Message); }
+            }
             // Erweiterung insgesamt kleiner (Modell und Kollision zusammen).
             go.transform.localScale = Vector3.one * extensionScale.Value;
             PieceManager.Instance.AddPiece(new CustomPiece(go, true, new PieceConfig {
@@ -746,10 +862,28 @@ namespace VikingFoodPlus
             }
             // Fladenbrot wird als Teig am Runenkessel hergestellt und im Ofen gebacken.
             if (food.Id == "HeartyFlatbread") RegisterFlatbreadDough();
-            ItemManager.Instance.AddRecipe(new CustomRecipe(new RecipeConfig {
-                Item = food.Id == "HeartyFlatbread" ? "VFP_HeartyFlatbreadDough" : id, CraftingStation = Station, MinStationLevel = food.Level,
-                Amount = portions[food.Id].Value, Requirements = reqs.ToArray()
-            }));
+            string recipeItem = food.Id == "HeartyFlatbread" ? "VFP_HeartyFlatbreadDough" : id;
+            foreach (var st in CookingStations())
+            {
+                ItemManager.Instance.AddRecipe(new CustomRecipe(new RecipeConfig {
+                    Name = "Recipe_" + recipeItem + (st == Station ? "" : "_Cauldron"),
+                    Item = recipeItem, CraftingStation = st, MinStationLevel = food.Level,
+                    Amount = portions[food.Id].Value, Requirements = reqs.ToArray(),
+                    // Saisongerichte: wie Valheims Saisonrezepte deaktiviert, die aktive Saison schaltet sie frei
+                    Enabled = !Seasons.ContainsKey(food.Id) || seasonalAlways.Value
+                }));
+            }
+        }
+
+        // Kochstationen laut Config: Runenkessel (Standard), Valheim-Kessel oder beide.
+        private string[] CookingStations()
+        {
+            switch (cookingStation.Value)
+            {
+                case "Cauldron": return new[] { "piece_cauldron" };
+                case "Both": return new[] { Station, "piece_cauldron" };
+                default: return new[] { Station };
+            }
         }
 
         private void RegisterFlatbreadDough()
@@ -866,6 +1000,12 @@ namespace VikingFoodPlus
                 {"vfp_buff_fire_tip", "Etwas weniger Feuerschaden."},
                 {"vfp_buff_north", "Nordlichtkraft"},
                 {"vfp_buff_north_tip", "Ausdauer erholt sich etwas schneller."},
+                {"vfp_buff_summer", "Mittsommerfreude"},
+                {"vfp_buff_summer_tip", "Ausdauer erholt sich etwas schneller."},
+                {"vfp_buff_ghost", "Geisterkraft"},
+                {"vfp_buff_ghost_tip", "Leben erholt sich etwas schneller."},
+                {"vfp_buff_yule", "Julwärme"},
+                {"vfp_buff_yule_tip", "Etwas weniger Frostschaden."},
                 {"vfp_fermentbarrel", "Gärfass"},
                 {"vfp_fermentbarrel_desc", "Erweiterung für den Runenkessel. Erhöht die Kochstufe auf 2. In der Nähe des Runenkessels aufstellen."},
                 {"vfp_runedryingrack", "Runen-Trockengestell"},
@@ -891,6 +1031,12 @@ namespace VikingFoodPlus
                 {"vfp_buff_fire_tip", "Slightly less fire damage."},
                 {"vfp_buff_north", "Northern strength"},
                 {"vfp_buff_north_tip", "Stamina regenerates a little faster."},
+                {"vfp_buff_summer", "Midsummer joy"},
+                {"vfp_buff_summer_tip", "Stamina regenerates a little faster."},
+                {"vfp_buff_ghost", "Ghostly vigor"},
+                {"vfp_buff_ghost_tip", "Health regenerates a little faster."},
+                {"vfp_buff_yule", "Yule warmth"},
+                {"vfp_buff_yule_tip", "Slightly less frost damage."},
                 {"vfp_fermentbarrel", "Fermentation Barrel"},
                 {"vfp_fermentbarrel_desc", "Runic Cauldron upgrade. Raises the cooking station level to 2. Place near the Runic Cauldron."},
                 {"vfp_runedryingrack", "Runic Drying Rack"},
@@ -913,6 +1059,7 @@ namespace VikingFoodPlus
                 de[key] = feast.German; en[key] = feast.English;
                 de[key + "_desc"] = feast.DescDe; en[key + "_desc"] = feast.DescEn;
             }
+            if (drinksEnabled.Value) AddDrinkTranslations(de, en);
             loc.AddTranslation("German", de);
             loc.AddTranslation("English", en);
             LocalizationManager.Instance.AddLocalization(loc);

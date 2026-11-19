@@ -1,132 +1,156 @@
 newmtl stone
-Kd 0.420 0.420 0.440
+Kd 0.360 0.350 0.330
 Ke 0.000 0.000 0.000
 
 newmtl stone_dark
-Kd 0.260 0.260 0.290
+Kd 0.220 0.210 0.200
 Ke 0.000 0.000 0.000
 
 newmtl wood
-Kd 0.380 0.230 0.120
+Kd 0.300 0.200 0.120
 Ke 0.000 0.000 0.000
 
 newmtl wood_dark
-Kd 0.220 0.140 0.090
+Kd 0.170 0.120 0.080
 Ke 0.000 0.000 0.000
 
 newmtl wood_pale
-Kd 0.560 0.430 0.280
+Kd 0.450 0.380 0.280
 Ke 0.000 0.000 0.000
 
 newmtl iron
-Kd 0.170 0.170 0.190
+Kd 0.120 0.120 0.130
 Ke 0.000 0.000 0.000
 
 newmtl copper
-Kd 0.660 0.360 0.150
+Kd 0.500 0.300 0.160
 Ke 0.000 0.000 0.000
 
 newmtl rope
-Kd 0.550 0.450 0.270
+Kd 0.450 0.380 0.250
 Ke 0.000 0.000 0.000
 
 newmtl leaf
-Kd 0.200 0.420 0.140
+Kd 0.200 0.300 0.120
 Ke 0.000 0.000 0.000
 
 newmtl moss
-Kd 0.270 0.420 0.140
+Kd 0.240 0.320 0.140
 Ke 0.000 0.000 0.000
 
 newmtl antler
-Kd 0.740 0.660 0.480
+Kd 0.620 0.560 0.420
 Ke 0.000 0.000 0.000
 
 newmtl bone
-Kd 0.860 0.810 0.660
+Kd 0.700 0.650 0.500
+Ke 0.000 0.000 0.000
+
+newmtl glow_gold
+Kd 0.750 0.480 0.160
+Ke 0.340 0.200 0.050
+
+newmtl glow_green
+Kd 0.420 0.580 0.200
+Ke 0.160 0.300 0.050
+
+newmtl glow_pink
+Kd 0.520 0.550 0.800
+Ke 0.160 0.200 0.340
+
+newmtl glow_blue
+Kd 0.550 0.720 0.850
+Ke 0.120 0.240 0.340
+
+newmtl crystal_green
+Kd 0.400 0.550 0.250
+Ke 0.060 0.140 0.030
+
+newmtl crystal_blue
+Kd 0.400 0.500 0.660
+Ke 0.030 0.060 0.140
+
+newmtl cap_purple
+Kd 0.300 0.280 0.440
+Ke 0.030 0.030 0.080
+
+newmtl mush_stem
+Kd 0.700 0.680 0.620
+Ke 0.000 0.000 0.000
+
+newmtl ice
+Kd 0.680 0.760 0.820
+Ke 0.030 0.060 0.090
+
+newmtl ice_deep
+Kd 0.420 0.550 0.680
+Ke 0.030 0.080 0.150
+
+newmtl frost
+Kd 0.820 0.840 0.860
+Ke 0.000 0.000 0.000
+
+newmtl glass
+Kd 0.380 0.480 0.540
+Ke 0.020 0.050 0.080
+
+newmtl glass_green
+Kd 0.300 0.400 0.190
+Ke 0.030 0.070 0.010
+
+newmtl glass_purple
+Kd 0.340 0.320 0.460
+Ke 0.030 0.030 0.080
+
+newmtl herb_red
+Kd 0.480 0.220 0.140
+Ke 0.000 0.000 0.000
+
+newmtl herb_orange
+Kd 0.550 0.360 0.160
+Ke 0.000 0.000 0.000
+
+newmtl herb_yellow
+Kd 0.550 0.480 0.220
+Ke 0.000 0.000 0.000
+
+newmtl herb_green
+Kd 0.300 0.380 0.160
+Ke 0.000 0.000 0.000
+
+newmtl meat
+Kd 0.500 0.220 0.180
+Ke 0.000 0.000 0.000
+
+newmtl fish
+Kd 0.550 0.550 0.500
 Ke 0.000 0.000 0.000
 
 newmtl void
 Kd 0.040 0.040 0.050
 Ke 0.000 0.000 0.000
 
-newmtl glow_gold
-Kd 0.900 0.600 0.150
-Ke 1.000 0.620 0.120
+newmtl mead
+Kd 0.880 0.560 0.140
+Ke 0.400 0.220 0.040
 
-newmtl glow_green
-Kd 0.450 0.900 0.150
-Ke 0.350 0.950 0.100
-
-newmtl glow_pink
-Kd 0.900 0.300 0.950
-Ke 0.850 0.200 0.950
-
-newmtl glow_blue
-Kd 0.350 0.750 1.000
-Ke 0.250 0.650 1.000
-
-newmtl crystal_green
-Kd 0.400 0.850 0.200
-Ke 0.200 0.600 0.080
-
-newmtl crystal_blue
-Kd 0.300 0.500 0.950
-Ke 0.100 0.250 0.750
-
-newmtl cap_purple
-Kd 0.550 0.140 0.660
-Ke 0.180 0.030 0.250
-
-newmtl mush_stem
-Kd 0.820 0.770 0.720
+newmtl foam
+Kd 0.860 0.820 0.700
 Ke 0.000 0.000 0.000
 
-newmtl ice
-Kd 0.720 0.880 1.000
-Ke 0.080 0.200 0.300
+newmtl rune_gold
+Kd 0.950 0.700 0.250
+Ke 0.600 0.380 0.080
 
-newmtl ice_deep
-Kd 0.300 0.550 0.920
-Ke 0.080 0.280 0.650
+newmtl rune_green
+Kd 0.550 0.850 0.250
+Ke 0.300 0.600 0.080
 
-newmtl frost
-Kd 0.920 0.960 1.000
-Ke 0.050 0.060 0.070
+newmtl rune_pink
+Kd 0.700 0.650 0.950
+Ke 0.380 0.340 0.620
 
-newmtl glass
-Kd 0.550 0.820 0.950
-Ke 0.120 0.350 0.480
-
-newmtl glass_green
-Kd 0.550 0.900 0.350
-Ke 0.150 0.380 0.060
-
-newmtl glass_purple
-Kd 0.780 0.450 0.950
-Ke 0.260 0.080 0.360
-
-newmtl herb_red
-Kd 0.750 0.150 0.100
-Ke 0.000 0.000 0.000
-
-newmtl herb_orange
-Kd 0.850 0.450 0.100
-Ke 0.000 0.000 0.000
-
-newmtl herb_yellow
-Kd 0.850 0.720 0.150
-Ke 0.000 0.000 0.000
-
-newmtl herb_green
-Kd 0.280 0.500 0.160
-Ke 0.000 0.000 0.000
-
-newmtl fish
-Kd 0.550 0.600 0.650
-Ke 0.000 0.000 0.000
-
-newmtl meat
-Kd 0.400 0.120 0.100
-Ke 0.000 0.000 0.000
+newmtl rune_blue
+Kd 0.600 0.850 1.000
+Ke 0.250 0.500 0.700
 

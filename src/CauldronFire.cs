@@ -126,7 +126,7 @@ namespace VikingFoodPlus
         private static Type locType;
         private static MethodInfo locSimple, locWords;
 
-        private static string Loc(string text, params string[] words)
+        internal static string Loc(string text, params string[] words)
         {
             try
             {
