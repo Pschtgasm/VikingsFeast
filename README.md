@@ -38,6 +38,7 @@ This is the support repository for **Viking's Feast**.
 
 ## ✨ Features
 
+- **11 drinks**: 7 single meads and 4 mead kegs for groups, with small effects Valheim does not have
 - **3 feast platters** for groups, placed with the Serving Tray
 - **24 new recipes** covering Meadows, Black Forest, Swamp, Mountains, Plains, Mistlands, Ashlands and the Deep North
 - **Runic Cauldron**: a new cooking station with its own 3D model, build menu icon and a **built-in fire** that works like a campfire (add wood, burns down, goes out)
@@ -124,6 +125,30 @@ The effects are intentionally weaker than vanilla resistance meads and can be sw
 
 ---
 
+## 🍺 Drinks *(new in 1.5.0)*
+
+![Drinks](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/drinks_showcase.png)
+
+Single meads: make the mead base at the vanilla **Mead Ketill**, ferment it in the vanilla **Fermenter** or the **Fermentation Barrel** (6 bottles, 10 min). Mead kegs: make the base at the **Runic Cauldron** (level 2), ferment it in the **Fermentation Barrel** and place the keg with the **Serving Tray** (10 servings, 20 min). At most 2 drinks at the same time. At the Runic Cauldron the recipes are split into the collapsible groups **Food** and **Mead**.
+
+| Drink | Type | Ingredients (base) | Effect |
+|---|---|---|---|
+| Fisher's brew | single | Honey 10, Raw fish 3, Fishing bait 10, Dandelion 5 | Fish bite more readily |
+| Master cook's brew | single | Honey 10, Yellow mushroom 6, Carrot 6, Thistle 4 | Eaten food lasts 10% longer |
+| Hunter's brew | single | Honey 10, Blueberries 10, Raw meat 3, Feathers 5 | Bows and crossbows draw 10% faster |
+| Bog bitter | single | Honey 10, Thistle 6, Turnip 6, Guck 4 | No wet effect |
+| Helmsman's grog | single | Honey 10, Serpent scale 3, Onion 8, Resin 6 | Side wind drives the ship 20% better |
+| Gardener's mead | single | Honey 10, Carrot 5, Turnip 5, Barley 8 | 20% chance of an extra yield when harvesting/picking |
+| Galdr mead | single | Honey 10, Sap 6, Magecap 6, Royal jelly 4 | Spells cost 10% less eitr |
+| Shield brothers' mead | keg | Honey 20, Onion 10, Wolf meat 8, Wolf trophy 2 | -5% damage taken with a fellow player nearby |
+| Battle cry mead | keg | Honey 20, Bloodbag 8, Cloudberries 10, Fuling trophy 1 | +5% damage with a fellow player nearby |
+| Skald's brew | keg | Honey 20, Cloudberries 15, Barley 15, Lox trophy 1 | Skills rise 10% faster |
+| Rower's keg | keg | Honey 20, Serpent meat 4, Barley 12, Resin 8 | +3% sailing speed per player on board (max +12%) |
+
+Kegs: a bit stronger with 3+ players nearby, and you get rested faster.
+
+---
+
 ## ⚙️ Configuration
 
 `BepInEx/config/de.vikingfoodplus.mod.cfg`
@@ -134,6 +159,7 @@ The effects are intentionally weaker than vanilla resistance meads and can be sw
 - Build cost of the Ice Distillery (`Piece - IceDistillery > Requirements`)
 - Size of the upgrades (`Piece - Extensions > Scale`, default `0.75`) and how far from the cauldron they still count (`MaxDistance`, default `10` m)
 - Feast platters on/off (`Feasts > Enabled`) and where they are made (`Feasts > Station`: `PrepTable` (default) or `RuneCauldron`)
+- Drinks (`Drinks`, `Drink - <ID>`): on/off, ingredients, strength, duration, fermentation time, remaining time at the barrel (`ShowFermentTime`, default on), drinking sounds (`DrinkSound`, `KegSound`), Mead Ketill / Runic Cauldron / vanilla Fermenter
 - Small food effects on/off (`General > FoodBuffs`, default `true`)
 - Cooking time at the Runic Cauldron (`Piece - RuneCauldron > CookTime`, default `0` = vanilla)
 - Built-in cauldron fire on/off (`Piece - RuneCauldron > IntegratedFire`, default `true`), its height (`FireHeightOffset`) and its smoke (`FireSmoke`)
