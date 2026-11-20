@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1
+- Fixed: the Fermentation Barrel was completely white when drinks were enabled. Its model now uses the same material as the other Runic Cauldron upgrades again.
+- Short mod description on Thunderstore now mentions the drinks.
+
 ## 1.5.0
 - New: drinks. 7 single meads and 4 mead kegs for groups, each with a small effect that Valheim does not have.
 - Single meads (6 bottles, 10 minutes): make the mead base at the vanilla Mead Ketill and ferment it in the vanilla Fermenter or in the Fermentation Barrel.

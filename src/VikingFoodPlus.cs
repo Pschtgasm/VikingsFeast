@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.5.0")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.5.1")]
     [BepInDependency(Jotunn.Main.ModGuid)]
     public partial class VikingFoodPlus : BaseUnityPlugin
     {
@@ -244,7 +244,7 @@ namespace VikingFoodPlus
             try { if (foodEnabled["HeartyFlatbread"].Value) RegisterFlatbreadBaking(); }
             catch (Exception ex) { Logger.LogError("Fladenbrot-Kochofen: " + ex); }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.5.0 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.5.1 registration complete.");
         }
 
         private void RegisterStation()
@@ -803,14 +803,32 @@ namespace VikingFoodPlus
             }));
         }
 
+        private static Material PieceBaseMaterial(string prefabName)
+        {
+            var src = PrefabManager.Instance.GetPrefab(prefabName);
+            if (src == null) return null;
+            Material first = null;
+            foreach (var r in src.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                var m = r.sharedMaterial;
+                if (m == null || m.shader == null) continue;
+                if (m.shader.name.Contains("Piece")) return m;   // Valheim "Custom/Piece"
+                if (first == null) first = m;
+            }
+            return first;
+        }
+
         private void Decorate(GameObject parent, int style)
         {
             // Eigene 3D-Modelle (eingebettete OBJ-Dateien, erzeugt mit tools/make_models.py)
             string model = style == 1 ? "VFP_RuneCauldron" : style == 2 ? "VFP_FermentBarrel" : style == 3 ? "VFP_RuneDryingRack" : "VFP_IceDistillery";
             // Quelle fuer den Shader: ein MeshRenderer des geklonten Vanilla-Prefabs (keine Partikel)
-            Material baseMat = null;
-            foreach (var renderer in parent.GetComponentsInChildren<MeshRenderer>(true))
-                if (renderer.sharedMaterial != null) { baseMat = renderer.sharedMaterial; break; }
+            // Gaerfass ist (mit Getraenken) ein Fermenter-Klon: dessen erstes Material nutzt einen Shader, der unsere
+            // Farben ignoriert (Modell wird komplett weiss). Daher immer das bewaehrte Material der Werkbank-Erweiterung.
+            Material baseMat = parent.GetComponent<Fermenter>() != null ? PieceBaseMaterial("piece_workbench_ext1") : null;
+            if (baseMat == null)
+                foreach (var renderer in parent.GetComponentsInChildren<MeshRenderer>(true))
+                    if (renderer.sharedMaterial != null) { baseMat = renderer.sharedMaterial; break; }
             if (baseMat == null) { Logger.LogWarning("No source material for custom geometry"); return; }
             try
             {
