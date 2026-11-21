@@ -141,7 +141,7 @@ The effects are intentionally weaker than vanilla resistance meads and can be sw
 
 ![Drinks](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/drinks_showcase.png)
 
-Single meads: make the mead base at the vanilla **Mead Ketill**, ferment it in the vanilla **Fermenter** or the **Fermentation Barrel** (6 bottles, 10 min). Mead kegs: make the base at the **Runic Cauldron** (level 2), ferment it in the **Fermentation Barrel** and place the keg with the **Serving Tray** (10 servings, 20 min). At most 2 drinks at the same time. At the Runic Cauldron the recipes are split into the collapsible groups **Food** and **Mead**.
+Single meads: make the mead base at the vanilla **Mead Ketill**, ferment it in the vanilla **Fermenter** or the **Fermentation Barrel** (6 bottles, 10 min). Mead kegs: make the base at the **Runic Cauldron** (level 2), ferment it in the **Fermentation Barrel** and place the keg with the **Serving Tray** (10 servings, 20 min). At most 2 drinks at the same time. At the Runic Cauldron the recipes are split into the collapsible groups **Food** and **Mead**. Three Valheim potions at the top right of the crafting menu sort the dishes by health, stamina or eitr (`General > SortButtons`: Runic Cauldron only, all cooking stations, every station or off).
 
 | Drink | Type | Ingredients (base) | Effect |
 |---|---|---|---|
@@ -174,6 +174,7 @@ Kegs: a bit stronger with 3+ players nearby, and you get rested faster.
 - Feast platters on/off (`Feasts > Enabled`) and where they are made (`Feasts > Station`: `PrepTable` (default) or `RuneCauldron`)
 - Drinks (`Drinks`, `Drink - <ID>`): on/off, ingredients, strength, duration, fermentation time, remaining time at the barrel (`ShowFermentTime`, default on), drinking sounds (`DrinkSound`, `KegSound`), Mead Ketill / Runic Cauldron / vanilla Fermenter
 - Seasonal dishes on/off (`Seasonal > Enabled`) and all year (`Seasonal > AlwaysAvailable`)
+- Sort buttons (`General > SortButtons`): `RuneCauldron` (default), `Cooking` (all cooking stations), `All` or `Off`
 - Small food effects on/off (`General > FoodBuffs`, default `true`)
 - Cooking time at the Runic Cauldron (`Piece - RuneCauldron > CookTime`, default `0` = vanilla)
 - Built-in cauldron fire on/off (`Piece - RuneCauldron > IntegratedFire`, default `true`), its height (`FireHeightOffset`) and its smoke (`FireSmoke`)

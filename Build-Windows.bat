@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set "MODVERSION=1.5.1"
+set "MODVERSION=1.5.2"
 cd /d "%~dp0"
 where dotnet >nul 2>&1 || (echo FEHLER: .NET SDK fehlt. https://dotnet.microsoft.com/download & pause & exit /b 1)
 if "%~1"=="" (set /p "VALHEIM=Valheim Installationsordner eingeben: ") else (set "VALHEIM=%~1")

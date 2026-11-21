@@ -105,6 +105,7 @@ namespace VikingFoodPlus
         private ConfigEntry<float> drinkRestBonus;
         private ConfigEntry<float> drinkRowerMax;
         private ConfigEntry<bool> recipeGroups;
+        private ConfigEntry<string> sortButtons;
         private ConfigEntry<bool> showFermentTime;
         private ConfigEntry<int> drinkSound, kegSound;
         private readonly Dictionary<int, EffectList> drinkSounds = new Dictionary<int, EffectList>();
@@ -147,6 +148,12 @@ namespace VikingFoodPlus
                 "Gaerfass: beim Drueberschauen die Restzeit bis fertig anzeigen. Sofort wirksam.");
             recipeGroups = Config.Bind("Drinks", "RecipeGroups", true,
                 "Runenkessel: Rezepte in die aufklappbaren Gruppen Essen und Met teilen. Neustart noetig.");
+            sortButtons = Config.Bind("General", "SortButtons", "RuneCauldron",
+                new ConfigDescription("Sortier-Knoepfe (Gesundheits-, Ausdauer-, Eitr-Trank) oben rechts im Herstellmenue: Off = aus, RuneCauldron = nur am Runenkessel, " +
+                    "Cooking = an allen Koch-Stationen (Runenkessel, Kessel, Zubereitungstisch, Ofen), All = an jeder Werkbank/Station. Sofort wirksam.",
+                    new AcceptableValueList<string>("Off", "RuneCauldron", "Cooking", "All")));
+            RecipeGroups.SortScope = sortButtons.Value;
+            sortButtons.SettingChanged += (s, e) => RecipeGroups.SortScope = sortButtons.Value;
             foreach (var d in Drinks)
             {
                 string sec = "Drink - " + d.Id;
@@ -462,19 +469,13 @@ namespace VikingFoodPlus
                 try
                 {
                     var geo = ModelLoader.Build(piece, "VFP_Keg", shader);
-                    AddKegSymbol(geo, d.Id);
-                    Color band;
-                    if (KegColors.TryGetValue(d.Id, out band))
-                        foreach (var mr in geo.GetComponentsInChildren<MeshRenderer>(true))
-                            if (mr.gameObject.name == "K_Bands" && mr.sharedMaterial != null)
-                            {
-                                var m = mr.sharedMaterial;
-                                if (m.HasProperty("_Color")) m.SetColor("_Color", band);
-                                if (m.HasProperty("_EmissionColor")) m.SetColor("_EmissionColor", band * 0.15f);
-                            }
+                    DecorateKeg(geo, d.Id);
                 }
                 catch (Exception ex) { Logger.LogWarning("Faesschen-Modell: " + ex.Message); }
             }
+            // Auch das Item am Boden (z. B. frisch aus dem Gaerfass) als Faesschen zeigen statt als Sumpf-Platte
+            try { ApplyKegItemModel(mat, d.Id); } catch (Exception ex) { Logger.LogWarning("Faesschen-Item " + d.Id + ": " + ex.Message); }
+            try { ApplyKegItemModel(eat, d.Id); } catch (Exception) { }
             var pieceComp = piece.GetComponent<Piece>();
             pieceComp.m_name = "$" + key;
             pieceComp.m_description = "$" + key + "_desc";
@@ -484,6 +485,61 @@ namespace VikingFoodPlus
                 Requirements = new[] { new RequirementConfig(matId, 1, 0, true) }
             }));
             return mat;
+        }
+
+        private void DecorateKeg(GameObject geo, string id)
+        {
+            AddKegSymbol(geo, id);
+            Color band;
+            if (KegColors.TryGetValue(id, out band))
+                foreach (var mr in geo.GetComponentsInChildren<MeshRenderer>(true))
+                    if (mr.gameObject.name == "K_Bands" && mr.sharedMaterial != null)
+                    {
+                        var m = mr.sharedMaterial;
+                        if (m.HasProperty("_Color")) m.SetColor("_Color", band);
+                        if (m.HasProperty("_EmissionColor")) m.SetColor("_EmissionColor", band * 0.15f);
+                    }
+        }
+
+        /// <summary>Ersetzt das Weltmodell eines Faesschen-Items (Vanilla: Sumpf-Platte) durch das Faesschen,
+        /// skaliert auf die Groesse der Vanilla-Platte.</summary>
+        private void ApplyKegItemModel(GameObject item, string id)
+        {
+            Material shader = null; Bounds vb = new Bounds(); bool have = false;
+            var root = item.transform;
+            foreach (var mf in item.GetComponentsInChildren<MeshFilter>(true))
+            {
+                var mr = mf.GetComponent<MeshRenderer>();
+                if (mr == null || mf.sharedMesh == null) continue;
+                if (shader == null && mr.sharedMaterial != null) shader = mr.sharedMaterial;
+                var b = mf.sharedMesh.bounds;
+                foreach (var c in new[] { b.min, b.max, new Vector3(b.min.x, b.max.y, b.min.z), new Vector3(b.max.x, b.min.y, b.max.z),
+                                          new Vector3(b.min.x, b.min.y, b.max.z), new Vector3(b.max.x, b.max.y, b.min.z) })
+                {
+                    var pt = root.InverseTransformPoint(mf.transform.TransformPoint(c));
+                    if (!have) { vb = new Bounds(pt, Vector3.zero); have = true; } else vb.Encapsulate(pt);
+                }
+            }
+            if (shader == null || !have) throw new Exception("kein Modell am Vanilla-Item");
+            foreach (var r in item.GetComponentsInChildren<Renderer>(true)) r.enabled = false;
+            var geo = ModelLoader.Build(item, "VFP_Keg", shader);
+            DecorateKeg(geo, id);
+            // Groesse des Faesschens messen und auf die breiteste Seite der Platte bringen
+            Bounds gb = new Bounds(); bool g = false;
+            foreach (var mf in geo.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (mf.sharedMesh == null) continue;
+                var b = mf.sharedMesh.bounds;
+                foreach (var c in new[] { b.min, b.max })
+                {
+                    var pt = geo.transform.InverseTransformPoint(mf.transform.TransformPoint(c));
+                    if (!g) { gb = new Bounds(pt, Vector3.zero); g = true; } else gb.Encapsulate(pt);
+                }
+            }
+            float target = Mathf.Max(vb.size.x, vb.size.z) * 0.85f, have_ = g ? Mathf.Max(gb.size.x, gb.size.z) : 1f;
+            float k = have_ > 0.001f ? target / have_ : 1f;
+            geo.transform.localScale = Vector3.one * k;
+            geo.transform.localPosition = new Vector3(vb.center.x, vb.min.y - (g ? gb.min.y * k : 0f), vb.center.z);
         }
 
         // ---- Eigenes Trinkgeraeusch: WAV aus der DLL, abgespielt ueber einen geklonten Valheim-Sound (gleiche Lautstaerke-Regler)
@@ -640,7 +696,7 @@ namespace VikingFoodPlus
                 if (harmony == null) harmony = new Harmony(Guid);
                 harmony.CreateClassProcessor(typeof(RecipeGroups.Patch)).Patch();
             }
-            catch (Exception ex) { Logger.LogWarning("Rezept-Gruppen (Essen/Met) nicht aktiv: " + ex.Message); }
+            catch (Exception ex) { Logger.LogWarning("Rezept-Gruppen / Sortierung nicht aktiv: " + ex.Message); }
         }
 
         private void AddDrinkTranslations(Dictionary<string, string> de, Dictionary<string, string> en)

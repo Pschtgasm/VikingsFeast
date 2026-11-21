@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace VikingFoodPlus
 {
     /// <summary>
-    /// Runenkessel: Rezeptliste in zwei aufklappbare Gruppen "Essen" und "Met" teilen.
+    /// Runenkessel: Rezeptliste in zwei aufklappbare Gruppen "Essen" und "Met" teilen; Gerichte nach Gesundheit/Ausdauer/Eitr sortierbar.
     /// Nur am Runenkessel und nur im Herstellen-Reiter; an allen anderen Stationen bleibt die Liste wie in Valheim.
     /// Der Auf-/Zu-Zustand gilt bis zum Neustart des Spiels.
     /// </summary>
@@ -17,7 +18,16 @@ namespace VikingFoodPlus
     {
         internal static bool FoodOpen = true, MeadOpen = true;
         internal static string FoodLabel = "Essen", MeadLabel = "Met";
+        /// <summary>Gruppen Essen/Met am Runenkessel (Config Drinks > RecipeGroups, nur mit Getraenken).</summary>
+        internal static bool GroupsEnabled = true;
+        /// <summary>Wo die Sortier-Knoepfe erscheinen: Off, RuneCauldron, Cooking, All (Config General > SortButtons).</summary>
+        internal static string SortScope = "RuneCauldron";
+        /// <summary>Sortierung der Gerichte: 0 = wie Valheim, 1 = Gesundheit, 2 = Ausdauer, 3 = Eitr (jeweils absteigend).</summary>
+        internal static int SortMode = 0;
         private static readonly List<GameObject> headers = new List<GameObject>();
+        private static GameObject sortBar;
+        private static Image[] sortImages;
+        private static GameObject[] sortLabels;
 
         private static readonly FieldInfo AvailableField = AccessTools.Field(typeof(InventoryGui), "m_availableRecipes");
         private static readonly FieldInfo BaseSizeField = AccessTools.Field(typeof(InventoryGui), "m_recipeListBaseSize");
@@ -29,11 +39,36 @@ namespace VikingFoodPlus
             return n.StartsWith("VFP_MeadBase_") || n.StartsWith("VFP_KegBase_");
         }
 
-        private static bool AtRuneCauldron()
+        private static CraftingStation CurrentStation()
         {
             var p = Player.m_localPlayer;
-            var cs = p != null ? p.GetCurrentCraftingStation() : null;
+            return p != null ? p.GetCurrentCraftingStation() : null;
+        }
+
+        private static bool IsRuneCauldron(CraftingStation cs)
+        {
             return cs != null && (cs.m_name == "$vfp_station" || cs.gameObject.name.StartsWith("VFP_RuneCauldron"));
+        }
+
+        private static bool IsCooking(CraftingStation cs)
+        {
+            if (cs == null) return false;
+            if (IsRuneCauldron(cs)) return true;
+            string go = cs.gameObject.name, n = cs.m_name ?? "";
+            foreach (var id in new[] { "piece_cauldron", "piece_preptable", "piece_oven" })
+                if (go.StartsWith(id) || n == "$" + id) return true;
+            return false;
+        }
+
+        private static bool SortHere(CraftingStation cs)
+        {
+            switch (SortScope)
+            {
+                case "RuneCauldron": return IsRuneCauldron(cs);
+                case "Cooking": return IsCooking(cs);
+                case "All": return cs != null;
+                default: return false;
+            }
         }
 
         [HarmonyPatch(typeof(InventoryGui), "UpdateRecipeList")]
@@ -50,7 +85,14 @@ namespace VikingFoodPlus
 
         private static void Apply(InventoryGui gui)
         {
-            if (gui == null || !gui.InCraftTab() || !AtRuneCauldron() || AvailableField == null) return;
+            if (gui == null) return;
+            var cs = CurrentStation();
+            bool craftTab = gui.InCraftTab();
+            bool sortHere = craftTab && SortHere(cs);
+            try { UpdateSortBar(gui, sortHere); } catch (Exception) { }
+            bool groups = craftTab && GroupsEnabled && IsRuneCauldron(cs);
+            bool sorting = sortHere && SortMode > 0;
+            if ((!groups && !sorting) || AvailableField == null) return;
             var list = AvailableField.GetValue(gui) as IList;
             if (list == null || list.Count == 0) return;
             var food = new List<object>(); var mead = new List<object>();
@@ -63,29 +105,210 @@ namespace VikingFoodPlus
                     elemProp = pair.GetType().GetProperty("InterfaceElement");
                     if (recipeProp == null || elemProp == null) return;
                 }
-                if (IsMead(recipeProp.GetValue(pair, null) as Recipe)) mead.Add(pair); else food.Add(pair);
+                if (groups && IsMead(recipeProp.GetValue(pair, null) as Recipe)) mead.Add(pair); else food.Add(pair);
             }
-            if (mead.Count == 0) return;   // ohne Met keine Gruppen noetig
-
-            // Liste neu aufbauen: zugeklappte Gruppen entfernen (Elemente zerstoeren)
-            list.Clear();
-            foreach (var p in food)
-                if (FoodOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
-            foreach (var p in mead)
-                if (MeadOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
-
+            if (sorting)
+            {
+                var rp = recipeProp;
+                food.Sort((a, b) =>
+                {
+                    int c = FoodStat(rp.GetValue(b, null) as Recipe).CompareTo(FoodStat(rp.GetValue(a, null) as Recipe));
+                    return c != 0 ? c : string.Compare(RecipeName(rp.GetValue(a, null) as Recipe), RecipeName(rp.GetValue(b, null) as Recipe), StringComparison.Ordinal);
+                });
+            }
             float space = gui.m_recipeListSpace;
             int row = 0;
-            string foodLabel = CauldronFire.Loc("$vfp_group_food"), meadLabel = CauldronFire.Loc("$vfp_group_mead");
-            if (string.IsNullOrEmpty(foodLabel) || foodLabel.StartsWith("[") || foodLabel.StartsWith("$")) foodLabel = FoodLabel;
-            if (string.IsNullOrEmpty(meadLabel) || meadLabel.StartsWith("[") || meadLabel.StartsWith("$")) meadLabel = MeadLabel;
-            headers.Add(MakeHeader(gui, (FoodOpen ? "▼ " : "▶ ") + foodLabel + " (" + food.Count + ")", row++, () => { FoodOpen = !FoodOpen; Refresh(gui); }));
-            if (FoodOpen) foreach (var p in food) Place(elemProp.GetValue(p, null) as GameObject, row++, space);
-            headers.Add(MakeHeader(gui, (MeadOpen ? "▼ " : "▶ ") + meadLabel + " (" + mead.Count + ")", row++, () => { MeadOpen = !MeadOpen; Refresh(gui); }));
-            if (MeadOpen) foreach (var p in mead) Place(elemProp.GetValue(p, null) as GameObject, row++, space);
+            list.Clear();
+            if (!groups)
+            {
+                // Andere Station: nur sortieren, keine Gruppen
+                foreach (var p in food) { list.Add(p); Place(elemProp.GetValue(p, null) as GameObject, row++, space); }
+            }
+            else
+            {
+                // Liste neu aufbauen: zugeklappte Gruppen entfernen (Elemente zerstoeren)
+                foreach (var p in food)
+                    if (FoodOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
+                foreach (var p in mead)
+                    if (MeadOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
 
+                string foodLabel = CauldronFire.Loc("$vfp_group_food"), meadLabel = CauldronFire.Loc("$vfp_group_mead");
+                if (string.IsNullOrEmpty(foodLabel) || foodLabel.StartsWith("[") || foodLabel.StartsWith("$")) foodLabel = FoodLabel;
+                if (string.IsNullOrEmpty(meadLabel) || meadLabel.StartsWith("[") || meadLabel.StartsWith("$")) meadLabel = MeadLabel;
+                headers.Add(MakeHeader(gui, (FoodOpen ? "▼ " : "▶ ") + foodLabel + " (" + food.Count + ")", row++, () => { FoodOpen = !FoodOpen; Refresh(gui); }));
+                if (FoodOpen) foreach (var p in food) Place(elemProp.GetValue(p, null) as GameObject, row++, space);
+                if (mead.Count > 0)
+                {
+                    headers.Add(MakeHeader(gui, (MeadOpen ? "▼ " : "▶ ") + meadLabel + " (" + mead.Count + ")", row++, () => { MeadOpen = !MeadOpen; Refresh(gui); }));
+                    if (MeadOpen) foreach (var p in mead) Place(elemProp.GetValue(p, null) as GameObject, row++, space);
+                }
+            }
             float baseSize = BaseSizeField != null ? (float)BaseSizeField.GetValue(gui) : 0f;
             gui.m_recipeListRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(baseSize, row * space));
+        }
+
+        private static float FoodStat(Recipe r)
+        {
+            var d = r != null && r.m_item != null ? r.m_item.m_itemData : null;
+            if (d == null || d.m_shared == null) return 0f;
+            var sh = d.m_shared;
+            return SortMode == 1 ? sh.m_food : SortMode == 2 ? sh.m_foodStamina : SortMode == 3 ? sh.m_foodEitr : 0f;
+        }
+
+        private static string RecipeName(Recipe r)
+        {
+            return r != null && r.m_item != null ? CauldronFire.Loc(r.m_item.m_itemData.m_shared.m_name) ?? "" : "";
+        }
+
+        /// <summary>Drei Valheim-Traenke oben rechts im Herstellmenue, auf Hoehe der Reiter Herstellen/Aufwerten:
+        /// Gesundheits-, Ausdauer- und Eitr-Trank. Erneutes Klicken auf den aktiven Trank stellt die normale Reihenfolge wieder her.</summary>
+        private static void UpdateSortBar(InventoryGui gui, bool show)
+        {
+            if (!show) { if (sortBar != null) sortBar.SetActive(false); return; }
+            var panel = gui.m_crafting;
+            if (panel == null || gui.m_tabCraft == null) return;
+            if (sortBar == null)
+            {
+                sortBar = new GameObject("VFP_SortBar", typeof(RectTransform));
+                sortBar.transform.SetParent(panel, false);
+                sortImages = new Image[3];
+                sortLabels = new GameObject[3];
+                string[] keys = { "$vfp_sort_health", "$vfp_sort_stamina", "$vfp_sort_eitr" };
+                string[] fallbackText = { "Health", "Stamina", "Eitr" };
+                string[] items = { "MeadHealthMinor", "MeadStaminaMinor", "MeadEitrMinor" };
+                string[] fallback = { "Sort_Health", "Sort_Stamina", "Sort_Eitr" };
+                for (int i = 0; i < 3; i++)
+                {
+                    int mode = i + 1;
+                    var go = new GameObject("VFP_Sort" + mode, typeof(RectTransform), typeof(Image), typeof(Button));
+                    go.transform.SetParent(sortBar.transform, false);
+                    var img = go.GetComponent<Image>();
+                    img.sprite = ItemIcon(items[i]) ?? LoadIcon(fallback[i]);
+                    img.preserveAspect = true;
+                    var b = go.GetComponent<Button>();
+                    b.targetGraphic = img;
+                    b.onClick.AddListener(() => { SortMode = SortMode == mode ? 0 : mode; Refresh(gui); });
+                    sortImages[i] = img;
+                    string label = CauldronFire.Loc(keys[i]);
+                    if (string.IsNullOrEmpty(label) || label.StartsWith("[") || label.StartsWith("$")) label = fallbackText[i];
+                    try
+                    {
+                        sortLabels[i] = MakeLabel(gui, go.transform, label);
+                        if (sortLabels[i] != null)
+                        {
+                            sortLabels[i].SetActive(false);   // nur beim Drueberfahren mit der Maus sichtbar
+                            go.AddComponent<SortHover>().Label = sortLabels[i];
+                        }
+                    }
+                    catch (Exception) { }
+                }
+            }
+            sortBar.SetActive(true);
+            sortBar.transform.SetAsLastSibling();
+            // Groesse und Hoehe an den Reiter "Herstellen" anlehnen, rechts buendig im Panel
+            var tab = gui.m_tabCraft.transform as RectTransform;
+            float size = tab != null ? Mathf.Clamp(tab.rect.height, 24f, 48f) : 32f;
+            float y = tab != null ? panel.InverseTransformPoint(tab.position).y - panel.rect.yMax : -60f;
+            var rt = (RectTransform)sortBar.transform;
+            rt.anchorMin = rt.anchorMax = new Vector2(1f, 1f);
+            rt.pivot = new Vector2(1f, 0.5f);
+            float step = size + 4f;
+            rt.sizeDelta = new Vector2(2 * step + size, size);
+            rt.anchoredPosition = new Vector2(-22f, y);
+            for (int i = 0; i < 3; i++)
+            {
+                var irt = (RectTransform)sortImages[i].transform;
+                irt.anchorMin = irt.anchorMax = new Vector2(0f, 0.5f);
+                irt.pivot = new Vector2(0f, 0.5f);
+                irt.sizeDelta = new Vector2(size, size);
+                irt.anchoredPosition = new Vector2(i * step, 0f);
+                sortImages[i].color = SortMode == i + 1 ? Color.white : new Color(0.6f, 0.6f, 0.6f, 0.6f);
+                if (sortLabels[i] != null)
+                {
+                    var lrt = sortLabels[i].transform as RectTransform;
+                    if (lrt != null)
+                    {
+                        lrt.anchorMin = lrt.anchorMax = new Vector2(0.5f, 1f);
+                        lrt.pivot = new Vector2(0.5f, 0f);
+                        lrt.sizeDelta = new Vector2(120f, 16f);
+                        lrt.anchoredPosition = new Vector2(0f, 1f);
+                    }
+                    var g = sortLabels[i].GetComponent<Graphic>();
+                    if (g != null) g.color = SortMode == i + 1 ? new Color(1f, 0.82f, 0.45f) : new Color(0.85f, 0.78f, 0.65f, 0.8f);
+                }
+            }
+        }
+
+        /// <summary>Kleine Beschriftung ueber einem Trank. Nutzt die Schrift der Rezeptliste (Valheim-Font).</summary>
+        private static GameObject MakeLabel(InventoryGui gui, Transform parent, string text)
+        {
+            var src = gui.m_recipeElementPrefab != null ? gui.m_recipeElementPrefab.transform.Find("name") : null;
+            if (src == null) return null;
+            var go = UnityEngine.Object.Instantiate(src.gameObject, parent, false);
+            go.name = "VFP_SortLabel";
+            go.SetActive(true);
+            foreach (Transform c in go.transform) UnityEngine.Object.Destroy(c.gameObject);
+            foreach (var c in go.GetComponents<Component>())
+            {
+                if (c == null) continue;
+                var t = c.GetType();
+                var pt = t.GetProperty("text", typeof(string));
+                if (pt == null || !pt.CanWrite) continue;
+                pt.SetValue(c, text, null);
+                var fs = t.GetProperty("fontSize");
+                if (fs != null && fs.CanWrite)
+                {
+                    if (fs.PropertyType == typeof(float)) fs.SetValue(c, 13f, null);
+                    else if (fs.PropertyType == typeof(int)) fs.SetValue(c, 13, null);
+                }
+                foreach (var autoName in new[] { "enableAutoSizing", "resizeTextForBestFit" })
+                {
+                    var au = t.GetProperty(autoName, typeof(bool));
+                    if (au != null && au.CanWrite) au.SetValue(c, false, null);
+                }
+                var wrap = t.GetProperty("enableWordWrapping", typeof(bool));
+                if (wrap != null && wrap.CanWrite) wrap.SetValue(c, false, null);
+                var al = t.GetProperty("alignment");
+                if (al != null && al.CanWrite && al.PropertyType.IsEnum)
+                {
+                    foreach (var name in new[] { "Center", "MiddleCenter", "Bottom", "LowerCenter" })
+                        if (Enum.IsDefined(al.PropertyType, name)) { al.SetValue(c, Enum.Parse(al.PropertyType, name), null); break; }
+                }
+                break;
+            }
+            var g = go.GetComponent<Graphic>();
+            if (g != null) g.raycastTarget = false;   // Klicks gehen weiter an den Trank
+            return go;
+        }
+
+        private static Sprite ItemIcon(string prefab)
+        {
+            try
+            {
+                var go = ObjectDB.instance != null ? ObjectDB.instance.GetItemPrefab(prefab) : null;
+                var drop = go != null ? go.GetComponent<ItemDrop>() : null;
+                return drop != null ? drop.m_itemData.GetIcon() : null;
+            }
+            catch (Exception) { return null; }
+        }
+
+        private static Sprite LoadIcon(string id)
+        {
+            try
+            {
+                using (var stream = typeof(RecipeGroups).Assembly.GetManifestResourceStream("VikingFoodPlus.Icons." + id + ".png"))
+                {
+                    if (stream == null) return null;
+                    var bytes = new byte[stream.Length];
+                    int off = 0, n;
+                    while (off < bytes.Length && (n = stream.Read(bytes, off, bytes.Length - off)) > 0) off += n;
+                    var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                    if (!ImageConversion.LoadImage(tex, bytes)) return null;
+                    tex.name = "VFP_" + id;
+                    return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f));
+                }
+            }
+            catch (Exception) { return null; }
         }
 
         private static void Place(GameObject element, int row, float space)
@@ -133,5 +356,14 @@ namespace VikingFoodPlus
             try { if (UpdatePanel != null && gui != null) UpdatePanel.Invoke(gui, new object[] { false }); }
             catch (Exception) { }
         }
+    }
+
+    /// <summary>Zeigt die Beschriftung eines Sortier-Tranks nur, solange die Maus darueber ist.</summary>
+    public class SortHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    {
+        public GameObject Label;
+        public void OnPointerEnter(PointerEventData e) { if (Label != null) Label.SetActive(true); }
+        public void OnPointerExit(PointerEventData e) { if (Label != null) Label.SetActive(false); }
+        private void OnDisable() { if (Label != null) Label.SetActive(false); }
     }
 }

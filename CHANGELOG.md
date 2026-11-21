@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.2
+- Fixed: a finished mead keg taken out of the Fermentation Barrel showed a swamp feast platter on the ground. It now shows the keg with its symbol and coloured bands.
+- New: sort buttons in the crafting menu. Three Valheim potions at the top right (healing, stamina and eitr mead) sort the dishes by health, stamina or eitr, highest first. Clicking the active potion again restores the normal order. Hovering over a potion shows what it sorts by (Health, Stamina, Eitr).
+- New config option `General > SortButtons`: `RuneCauldron` (default, only at the Runic Cauldron), `Cooking` (Runic Cauldron, Cauldron, Food Preparation Table and Oven), `All` (every crafting station) or `Off`. Takes effect immediately.
+
 ## 1.5.1
 - Fixed: the Fermentation Barrel was completely white when drinks were enabled. Its model now uses the same material as the other Runic Cauldron upgrades again.
 - Short mod description on Thunderstore now mentions the drinks.

@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.5.1")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.5.2")]
     [BepInDependency(Jotunn.Main.ModGuid)]
     public partial class VikingFoodPlus : BaseUnityPlugin
     {
@@ -199,7 +199,8 @@ namespace VikingFoodPlus
             BindDrinkConfig();
             if (!enabledMod.Value) return;
             if (drinksEnabled.Value) ApplyDrinkStatics();
-            if (drinksEnabled.Value && recipeGroups.Value) ApplyRecipeGroups();
+            RecipeGroups.GroupsEnabled = drinksEnabled.Value && recipeGroups.Value;
+            ApplyRecipeGroups();   // Gruppen und/oder Sortier-Knoepfe (beides per Config abschaltbar)
             ItemManager.OnItemsRegistered += AssignSeasonalRecipes;
             PrefabManager.OnVanillaPrefabsAvailable += Register;
         }
@@ -244,7 +245,7 @@ namespace VikingFoodPlus
             try { if (foodEnabled["HeartyFlatbread"].Value) RegisterFlatbreadBaking(); }
             catch (Exception ex) { Logger.LogError("Fladenbrot-Kochofen: " + ex); }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.5.1 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.5.2 registration complete.");
         }
 
         private void RegisterStation()
@@ -1078,6 +1079,9 @@ namespace VikingFoodPlus
                 de[key + "_desc"] = feast.DescDe; en[key + "_desc"] = feast.DescEn;
             }
             if (drinksEnabled.Value) AddDrinkTranslations(de, en);
+            de["vfp_sort_health"] = "Gesundheit"; en["vfp_sort_health"] = "Health";
+            de["vfp_sort_stamina"] = "Ausdauer"; en["vfp_sort_stamina"] = "Stamina";
+            de["vfp_sort_eitr"] = "Eitr"; en["vfp_sort_eitr"] = "Eitr";
             loc.AddTranslation("German", de);
             loc.AddTranslation("English", en);
             LocalizationManager.Instance.AddLocalization(loc);
