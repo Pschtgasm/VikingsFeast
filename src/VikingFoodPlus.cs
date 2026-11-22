@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.6.14")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.6.0")]
     [BepInDependency(Jotunn.Main.ModGuid)]
     public partial class VikingFoodPlus : BaseUnityPlugin
     {
@@ -237,7 +237,7 @@ namespace VikingFoodPlus
             try { if (foodEnabled["HeartyFlatbread"].Value) RegisterFlatbreadBaking(); }
             catch (Exception ex) { Logger.LogError("Fladenbrot-Kochofen: " + ex); }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.6.14 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.6.0 registration complete.");
         }
 
         private void RegisterStation()
