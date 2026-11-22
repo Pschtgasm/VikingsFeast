@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.3
+- New: own 3D models for all 24 dishes and the 3 seasonal dishes (Midsummer Cake, Turnip Ghost Soup, Yule Roast). They match their icons and are shown when dropped on the ground and on item stands.
+- On item stands all dishes now stand upright and have a uniform size of about 48 cm. Before, they showed the vanilla base foods, some of them tilted.
+
 ## 1.5.2
 - Fixed: a finished mead keg taken out of the Fermentation Barrel showed a swamp feast platter on the ground. It now shows the keg with its symbol and coloured bands.
 - New: sort buttons in the crafting menu. Three Valheim potions at the top right (healing, stamina and eitr mead) sort the dishes by health, stamina or eitr, highest first. Clicking the active potion again restores the normal order. Hovering over a potion shows what it sorts by (Health, Stamina, Eitr).

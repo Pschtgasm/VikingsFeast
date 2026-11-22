@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.5.2")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.5.3")]
     [BepInDependency(Jotunn.Main.ModGuid)]
     public partial class VikingFoodPlus : BaseUnityPlugin
     {
@@ -245,7 +245,7 @@ namespace VikingFoodPlus
             try { if (foodEnabled["HeartyFlatbread"].Value) RegisterFlatbreadBaking(); }
             catch (Exception ex) { Logger.LogError("Fladenbrot-Kochofen: " + ex); }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.5.2 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.5.3 registration complete.");
         }
 
         private void RegisterStation()
@@ -819,6 +819,70 @@ namespace VikingFoodPlus
             return first;
         }
 
+        /// <summary>Gerichte mit eigenem 3D-Modell (Boden und Objektstaender) statt des geklonten Valheim-Modells.</summary>
+        private static readonly HashSet<string> DishModels = new HashSet<string> { "MidsummerCake", "TurnipGhostSoup", "YuleRoast" };
+        /// <summary>Alle normalen Gerichte haben eigene Modelle (Models/VFP_Food_*.obj).</summary>
+        private const bool FoodModels = true;
+        /// <summary>Einheitliche Breite aller Gericht-Modelle auf Objektstaender und Boden (Meter).</summary>
+        private const float DishWidth = 0.48f;
+
+        /// <summary>Ersetzt das Weltmodell eines Gerichts durch ein eigenes OBJ-Modell. Liegt am Kind "attach" (das zeigt der
+        /// Objektstaender), skaliert auf die breiteste Seite des Vanilla-Modells.</summary>
+        /// <summary>Feinkorrektur einzelner Modelle: Groessenfaktor, Hoehe in Metern, 1 = gegen die Schraeglage von "attach" gerade ausrichten.</summary>
+        private static readonly Dictionary<string, float[]> DishModelTweaks = new Dictionary<string, float[]> {
+        };
+
+        internal void ApplyDishModel(GameObject item, string model)
+        {
+            var attach = item.transform.Find("attach");
+            var parent = attach != null ? attach : item.transform;
+            Bounds vb = new Bounds(); bool have = false;
+            foreach (var mf in parent.GetComponentsInChildren<MeshFilter>(true))
+            {
+                var mr = mf.GetComponent<MeshRenderer>();
+                if (mr == null || mf.sharedMesh == null) continue;
+                var b = mf.sharedMesh.bounds;
+                foreach (var c in new[] { b.min, b.max, new Vector3(b.min.x, b.max.y, b.min.z), new Vector3(b.max.x, b.min.y, b.max.z),
+                                          new Vector3(b.min.x, b.min.y, b.max.z), new Vector3(b.max.x, b.max.y, b.min.z) })
+                {
+                    var pt = parent.InverseTransformPoint(mf.transform.TransformPoint(c));
+                    if (!have) { vb = new Bounds(pt, Vector3.zero); have = true; } else vb.Encapsulate(pt);
+                }
+            }
+            if (!have) vb = new Bounds(Vector3.zero, Vector3.one * 0.3f);
+            var shader = PieceBaseMaterial("piece_workbench_ext1");
+            if (shader == null) foreach (var mr in item.GetComponentsInChildren<MeshRenderer>(true)) if (shader == null && mr.sharedMaterial != null) shader = mr.sharedMaterial;
+            if (shader == null) throw new Exception("kein Material");
+            foreach (var r in item.GetComponentsInChildren<Renderer>(true)) r.enabled = false;
+            var geo = ModelLoader.Build(parent.gameObject, model, shader);
+            // Der Objektstaender uebernimmt die Drehung von "attach" (bei Vanilla-Essen oft schraeg) -> Modell gerade ausrichten
+            float[] tw0;
+            if (attach != null && DishModelTweaks.TryGetValue(model, out tw0) && tw0.Length > 2 && tw0[2] > 0f)
+                geo.transform.localRotation = Quaternion.Inverse(attach.localRotation);
+            Bounds gb = new Bounds(); bool g = false;
+            foreach (var mf in geo.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (mf.sharedMesh == null) continue;
+                var b = mf.sharedMesh.bounds;
+                foreach (var c in new[] { b.min, b.max, new Vector3(b.min.x, b.max.y, b.min.z), new Vector3(b.max.x, b.min.y, b.max.z),
+                                          new Vector3(b.min.x, b.min.y, b.max.z), new Vector3(b.max.x, b.max.y, b.min.z) })
+                {
+                    // Lage relativ zum Modell-Ursprung, aber in den Achsen von parent (nach der Drehung, Massstab 1)
+                    var pt = parent.InverseTransformPoint(mf.transform.TransformPoint(c)) - geo.transform.localPosition;
+                    if (!g) { gb = new Bounds(pt, Vector3.zero); g = true; } else gb.Encapsulate(pt);
+                }
+            }
+            float size = g ? Mathf.Max(gb.size.x, gb.size.z) : 1f;
+            float unit0 = Mathf.Abs(parent.lossyScale.x) > 1e-5f ? Mathf.Abs(parent.lossyScale.x) : 1f;
+            float k = size > 0.001f ? (DishWidth / unit0) / size : 1f;   // alle Gerichte gleich breit
+            float[] tw; float yOff = 0f;
+            // feste Werte sind in Metern; "attach" kann skaliert sein -> in dessen lokale Einheiten umrechnen
+            float unit = Mathf.Abs(parent.lossyScale.x) > 1e-5f ? Mathf.Abs(parent.lossyScale.x) : 1f;
+            if (DishModelTweaks.TryGetValue(model, out tw)) { if (tw[0] > 0f && size > 0.001f) k = (tw[0] / unit) / size; yOff = tw[1] / unit; }
+            geo.transform.localScale = Vector3.one * k;
+            geo.transform.localPosition = new Vector3(vb.center.x - (g ? gb.center.x * k : 0f), vb.min.y - (g ? gb.min.y * k : 0f) + yOff, vb.center.z - (g ? gb.center.z * k : 0f));
+        }
+
         private void Decorate(GameObject parent, int style)
         {
             // Eigene 3D-Modelle (eingebettete OBJ-Dateien, erzeugt mit tools/make_models.py)
@@ -843,7 +907,7 @@ namespace VikingFoodPlus
         private void RegisterFood(FoodSpec food)
         {
             string id = "VFP_" + food.Id;
-            var go = PrefabManager.Instance.CreateClonedPrefab(id, food.Model);
+            var go = PrefabManager.Instance.CreateClonedPrefab(id, "QueensJam");   // Vorlage steht auf dem Objektstaender gerade; Aussehen kommt vom eigenen Modell
             if (go == null) throw new Exception("Missing item model: " + food.Model);
             var item = go.GetComponent<ItemDrop>();
             if (item == null) throw new Exception("Missing ItemDrop on " + food.Model);
@@ -868,6 +932,11 @@ namespace VikingFoodPlus
                     if (effect != null) shared.m_consumeStatusEffect = effect;
                 }
                 catch (Exception ex) { Logger.LogWarning("Effekt " + food.Id + ": " + ex.Message); }
+            }
+            if (DishModels.Contains(food.Id) || FoodModels)
+            {
+                try { ApplyDishModel(go, DishModels.Contains(food.Id) ? "VFP_" + food.Id : "VFP_Food_" + food.Id); }
+                catch (Exception ex) { Logger.LogWarning("Modell " + food.Id + ": " + ex.Message); }
             }
             ItemManager.Instance.AddItem(new CustomItem(go, true));
             var reqs = new List<RequirementConfig>();

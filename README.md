@@ -216,7 +216,7 @@ Neu sind 11 Getränke: 7 Einzelmets aus Metkessel und Fermenter und 4 Metfässch
 |---|---|
 | `src/` | C# source code |
 | `Icons/` | Food and build menu icons (embedded into the DLL) |
-| `Models/` | 3D models of the Runic Cauldron and its upgrades (`.obj` / `.mtl`) |
+| `Models/` | 3D models of the Runic Cauldron, its upgrades and all dishes (`.obj` / `.mtl`) |
 | `Translations/` | German and English localization |
 | `tools/` | Python scripts that generate the 3D models |
 | `docs/notizen/` | Development notes (German) |

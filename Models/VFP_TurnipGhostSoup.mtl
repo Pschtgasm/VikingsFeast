@@ -1,0 +1,84 @@
+newmtl wood
+Kd 0.340 0.220 0.130
+Ke 0.000 0.000 0.000
+
+newmtl wood_dark
+Kd 0.200 0.130 0.080
+Ke 0.000 0.000 0.000
+
+newmtl sponge
+Kd 0.720 0.520 0.280
+Ke 0.000 0.000 0.000
+
+newmtl cream
+Kd 0.880 0.840 0.740
+Ke 0.000 0.000 0.000
+
+newmtl rasp
+Kd 0.620 0.120 0.160
+Ke 0.000 0.000 0.000
+
+newmtl blue
+Kd 0.180 0.220 0.480
+Ke 0.000 0.000 0.000
+
+newmtl honey
+Kd 0.850 0.550 0.120
+Ke 0.200 0.100 0.000
+
+newmtl dandelion
+Kd 0.900 0.750 0.150
+Ke 0.100 0.080 0.000
+
+newmtl leaf
+Kd 0.220 0.380 0.140
+Ke 0.000 0.000 0.000
+
+newmtl broth
+Kd 0.350 0.650 0.180
+Ke 0.100 0.250 0.030
+
+newmtl turnip
+Kd 0.400 0.200 0.420
+Ke 0.000 0.000 0.000
+
+newmtl turnip_top
+Kd 0.300 0.450 0.180
+Ke 0.000 0.000 0.000
+
+newmtl carve
+Kd 0.950 0.750 0.250
+Ke 0.600 0.400 0.080
+
+newmtl slime
+Kd 0.300 0.600 0.200
+Ke 0.060 0.140 0.020
+
+newmtl eye
+Kd 0.050 0.050 0.050
+Ke 0.000 0.000 0.000
+
+newmtl meat
+Kd 0.420 0.200 0.100
+Ke 0.000 0.000 0.000
+
+newmtl meat_glaze
+Kd 0.620 0.340 0.120
+Ke 0.060 0.030 0.000
+
+newmtl bone
+Kd 0.780 0.720 0.580
+Ke 0.000 0.000 0.000
+
+newmtl carrot
+Kd 0.820 0.400 0.100
+Ke 0.000 0.000 0.000
+
+newmtl mistle_berry
+Kd 0.920 0.920 0.860
+Ke 0.000 0.000 0.000
+
+newmtl bowl_white
+Kd 0.700 0.680 0.620
+Ke 0.000 0.000 0.000
+

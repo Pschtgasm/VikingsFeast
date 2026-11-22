@@ -5,3 +5,4 @@ local.props
 *.user
 .vs/
 __pycache__/
+build-paths.txt
