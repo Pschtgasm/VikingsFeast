@@ -16,7 +16,83 @@ namespace VikingFoodPlus
     /// </summary>
     public static class RecipeGroups
     {
-        internal static bool FoodOpen = true, MeadOpen = true;
+        internal static bool FoodOpen = true, MeadOpen = true, SecretOpen = true;
+        /// <summary>Geheimrezepte: Item-Prefabname -> (Namens-Schluessel, Hinweis-Schluessel). Leer = keine Geheimrezepte.</summary>
+        internal static readonly List<string[]> SecretItems = new List<string[]>();
+        /// <summary>true = Geheimrezepte muessen per Rolle gelernt werden (sonst wie normale Rezepte).</summary>
+        internal static bool SecretsNeedScroll = true;
+        /// <summary>Gerade angeklickte ???-Zeile (Item-Prefabname) oder null.</summary>
+        internal static string LockedSel;
+        private static string[] lockedInfo;
+        private static readonly FieldInfo SelectedField = AccessTools.Field(typeof(InventoryGui), "m_selectedRecipe");
+        private static readonly FieldInfo NameField = AccessTools.Field(typeof(InventoryGui), "m_recipeName");
+        private static readonly FieldInfo DescField = AccessTools.Field(typeof(InventoryGui), "m_recipeDecription");
+
+        /// <summary>???-Zeile angeklickt: Auswahl aufheben, rechts stattdessen den Hinweis zur Rolle zeigen (ohne das Gericht zu verraten).</summary>
+        private static void SelectLocked(InventoryGui gui, string[] info, GameObject row)
+        {
+            LockedSel = info[0]; lockedInfo = info;
+            try
+            {
+                if (SelectedField != null)
+                    SelectedField.SetValue(gui, SelectedField.FieldType.IsValueType ? Activator.CreateInstance(SelectedField.FieldType) : null);
+                // Markierung der bisher gewaehlten Rezeptzeile entfernen, ???-Zeilen umfaerben
+                var list = AvailableField != null ? AvailableField.GetValue(gui) as IList : null;
+                if (list != null)
+                    foreach (var pair in list)
+                    {
+                        var ep = pair.GetType().GetProperty("InterfaceElement");
+                        var el = ep != null ? ep.GetValue(pair, null) as GameObject : null;
+                        var selT = el != null ? el.transform.Find("selected") : null;
+                        if (selT != null) selT.gameObject.SetActive(false);
+                    }
+                foreach (var h in headers)
+                {
+                    if (h == null) continue;
+                    var t = h.transform.Find("name"); var g = t != null ? t.GetComponent<Graphic>() : null;
+                    if (g != null && h.name == "VFP_LockedRow") g.color = h == row ? new Color(1f, 0.82f, 0.45f) : new Color(0.62f, 0.56f, 0.48f);
+                }
+            }
+            catch (Exception) { }
+        }
+
+        private static void SetText(object tmp, string text)
+        {
+            if (tmp == null) return;
+            var pt = tmp.GetType().GetProperty("text", typeof(string));
+            if (pt != null && pt.CanWrite) pt.SetValue(tmp, text, null);
+            var b = tmp as Behaviour; if (b != null) b.enabled = true;
+        }
+
+        [HarmonyPatch(typeof(InventoryGui), "UpdateRecipe")]
+        public static class LockedDetails
+        {
+            public static void Postfix(InventoryGui __instance)
+            {
+                if (LockedSel == null || lockedInfo == null || SelectedField == null) return;
+                try
+                {
+                    var sel = SelectedField.GetValue(__instance);
+                    var rp = sel != null ? sel.GetType().GetProperty("Recipe") : null;
+                    var rec = rp != null ? rp.GetValue(sel, null) as Recipe : null;
+                    if (rec != null || !__instance.InCraftTab()) { LockedSel = null; lockedInfo = null; return; }   // normales Rezept gewaehlt
+                    string title = CauldronFire.Loc("$vfp_secret_locked");
+                    if (string.IsNullOrEmpty(title) || title.StartsWith("[")) title = "??? – Geheimrezept";
+                    string hint = CauldronFire.Loc(lockedInfo[2]);
+                    string how = CauldronFire.Loc("$vfp_secret_locked_desc");
+                    if (string.IsNullOrEmpty(how) || how.StartsWith("[")) how = "Finde die passende Rezeptrolle, um dieses Geheimrezept zu lernen.";
+                    SetText(NameField != null ? NameField.GetValue(__instance) : null, title);
+                    SetText(DescField != null ? DescField.GetValue(__instance) : null, "<color=#ffd27a>" + hint + "</color>\n\n" + how);
+                    if (__instance.m_recipeIcon != null && lockedInfo.Length > 3 && ObjectDB.instance != null)
+                    {
+                        var sc = ObjectDB.instance.GetItemPrefab(lockedInfo[3]);
+                        var drop = sc != null ? sc.GetComponent<ItemDrop>() : null;
+                        if (drop != null) { __instance.m_recipeIcon.sprite = drop.m_itemData.GetIcon(); __instance.m_recipeIcon.enabled = true; }
+                    }
+                }
+                catch (Exception) { }
+            }
+        }
         internal static string FoodLabel = "Essen", MeadLabel = "Met";
         /// <summary>Gruppen Essen/Met am Runenkessel (Config Drinks > RecipeGroups, nur mit Getraenken).</summary>
         internal static bool GroupsEnabled = true;
@@ -32,6 +108,12 @@ namespace VikingFoodPlus
         private static readonly FieldInfo AvailableField = AccessTools.Field(typeof(InventoryGui), "m_availableRecipes");
         private static readonly FieldInfo BaseSizeField = AccessTools.Field(typeof(InventoryGui), "m_recipeListBaseSize");
         private static readonly MethodInfo UpdatePanel = AccessTools.Method(typeof(InventoryGui), "UpdateCraftingPanel", new[] { typeof(bool) });
+
+        private static bool IsSecret(Recipe r)
+        {
+            var n = r != null && r.m_item != null ? r.m_item.name : "";
+            return n.StartsWith("VFP_Secret_");
+        }
 
         private static bool IsMead(Recipe r)
         {
@@ -95,7 +177,7 @@ namespace VikingFoodPlus
             if ((!groups && !sorting) || AvailableField == null) return;
             var list = AvailableField.GetValue(gui) as IList;
             if (list == null || list.Count == 0) return;
-            var food = new List<object>(); var mead = new List<object>();
+            var food = new List<object>(); var mead = new List<object>(); var secret = new List<object>();
             PropertyInfo recipeProp = null, elemProp = null;
             foreach (var pair in list)
             {
@@ -105,16 +187,20 @@ namespace VikingFoodPlus
                     elemProp = pair.GetType().GetProperty("InterfaceElement");
                     if (recipeProp == null || elemProp == null) return;
                 }
-                if (groups && IsMead(recipeProp.GetValue(pair, null) as Recipe)) mead.Add(pair); else food.Add(pair);
+                var rcp = recipeProp.GetValue(pair, null) as Recipe;
+                if (groups && IsMead(rcp)) mead.Add(pair);
+                else if (groups && IsSecret(rcp)) secret.Add(pair);
+                else food.Add(pair);
             }
             if (sorting)
             {
                 var rp = recipeProp;
-                food.Sort((a, b) =>
+                Comparison<object> cmp = (a, b) =>
                 {
                     int c = FoodStat(rp.GetValue(b, null) as Recipe).CompareTo(FoodStat(rp.GetValue(a, null) as Recipe));
                     return c != 0 ? c : string.Compare(RecipeName(rp.GetValue(a, null) as Recipe), RecipeName(rp.GetValue(b, null) as Recipe), StringComparison.Ordinal);
-                });
+                };
+                food.Sort(cmp); secret.Sort(cmp);
             }
             float space = gui.m_recipeListSpace;
             int row = 0;
@@ -129,6 +215,8 @@ namespace VikingFoodPlus
                 // Liste neu aufbauen: zugeklappte Gruppen entfernen (Elemente zerstoeren)
                 foreach (var p in food)
                     if (FoodOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
+                foreach (var p in secret)
+                    if (SecretOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
                 foreach (var p in mead)
                     if (MeadOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
 
@@ -137,6 +225,41 @@ namespace VikingFoodPlus
                 if (string.IsNullOrEmpty(meadLabel) || meadLabel.StartsWith("[") || meadLabel.StartsWith("$")) meadLabel = MeadLabel;
                 headers.Add(MakeHeader(gui, (FoodOpen ? "▼ " : "▶ ") + foodLabel + " (" + food.Count + ")", row++, () => { FoodOpen = !FoodOpen; Refresh(gui); }));
                 if (FoodOpen) foreach (var p in food) Place(elemProp.GetValue(p, null) as GameObject, row++, space);
+                // Geheimrezepte: gelernte als normale Zeilen, noch nicht gelernte als "???"-Zeile mit Hinweis auf den Fundort der Rolle
+                if (SecretItems.Count > 0)
+                {
+                    var locked = new List<string[]>();
+                    var pl = Player.m_localPlayer;
+                    if (SecretsNeedScroll && pl != null)
+                        foreach (var si in SecretItems)
+                        {
+                            bool shown = false;
+                            foreach (var p in secret) { var rr = recipeProp.GetValue(p, null) as Recipe; if (rr != null && rr.m_item != null && rr.m_item.name == si[0]) { shown = true; break; } }
+                            if (!shown && !pl.IsRecipeKnown(si[1])) locked.Add(si);
+                        }
+                    if (secret.Count > 0 || locked.Count > 0)
+                    {
+                        string secLabel = CauldronFire.Loc("$vfp_group_secret");
+                        if (string.IsNullOrEmpty(secLabel) || secLabel.StartsWith("[") || secLabel.StartsWith("$")) secLabel = "Geheimrezepte";
+                        int total = SecretItems.Count, known = total - locked.Count;
+                        headers.Add(MakeHeader(gui, (SecretOpen ? "▼ " : "▶ ") + secLabel + " (" + known + "/" + total + ")", row++, () => { SecretOpen = !SecretOpen; Refresh(gui); }));
+                        if (SecretOpen)
+                        {
+                            foreach (var p in secret) Place(elemProp.GetValue(p, null) as GameObject, row++, space);
+                            foreach (var si in locked)
+                            {
+                                var info = si;
+                                GameObject lk = null;
+                                lk = MakeHeader(gui, "   ???", row++, () => SelectLocked(gui, info, lk));
+                                var nm = lk.transform.Find("name");
+                                var g2 = nm != null ? nm.GetComponent<Graphic>() : null;
+                                if (g2 != null) g2.color = LockedSel == info[0] ? new Color(1f, 0.82f, 0.45f) : new Color(0.62f, 0.56f, 0.48f);
+                                lk.name = "VFP_LockedRow";
+                                headers.Add(lk);
+                            }
+                        }
+                    }
+                }
                 if (mead.Count > 0)
                 {
                     headers.Add(MakeHeader(gui, (MeadOpen ? "▼ " : "▶ ") + meadLabel + " (" + mead.Count + ")", row++, () => { MeadOpen = !MeadOpen; Refresh(gui); }));

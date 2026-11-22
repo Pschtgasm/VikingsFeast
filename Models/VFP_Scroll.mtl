@@ -1,0 +1,20 @@
+newmtl Paper
+Kd 0.860 0.760 0.560
+Ke 0.000 0.000 0.000
+
+newmtl PaperEnd
+Kd 0.660 0.540 0.360
+Ke 0.000 0.000 0.000
+
+newmtl Ribbon
+Kd 0.550 0.130 0.110
+Ke 0.000 0.000 0.000
+
+newmtl Seal
+Kd 0.250 0.500 0.250
+Ke 0.000 0.000 0.000
+
+newmtl SealMark
+Kd 0.450 0.750 0.450
+Ke 0.000 0.000 0.000
+

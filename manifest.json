@@ -1,8 +1,8 @@
 {
   "name": "VikingsFeast",
-  "version_number": "1.5.3",
+  "version_number": "1.6.14",
   "website_url": "https://github.com/Pschtgasm/VikingsFeast",
-  "description": "24 Viking-inspired recipes, 11 meads and mead kegs, 3 seasonal dishes, 3 feast platters, a Runic Cauldron with built-in fire and three upgrades, small food and drink effects and custom icons.",
+  "description": "24 Viking-inspired recipes, 7 secret recipes with scrolls, 11 meads and mead kegs, 3 seasonal dishes, 3 feast platters, a Runic Cauldron with built-in fire and three upgrades and custom icons.",
   "dependencies": [
     "ValheimModding-Jotunn-2.30.2"
   ]

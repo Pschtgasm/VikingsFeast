@@ -27,6 +27,10 @@ namespace VikingFoodPlus
         public EffectList FuelAddedEffects;
         public List<GameObject> BurningObjects = new List<GameObject>();
 
+        /// <summary>true = Holz geht nie aus, das Feuer bleibt immer voll (Config General > CauldronFireInfinite, sofort wirksam).</summary>
+        internal static Func<bool> InfiniteFuel = () => false;
+        private static bool Infinite { get { try { return InfiniteFuel(); } catch (Exception) { return false; } } }
+
         private ZNetView nview;
         private float timer;
         private bool shown = true;
@@ -85,6 +89,7 @@ namespace VikingFoodPlus
         private float GetFuel()
         {
             if (nview == null || !nview.IsValid()) return 0f;
+            if (Infinite) return MaxFuel;
             float fuel = nview.GetZDO().GetFloat(FuelKey, -1f);
             return fuel < 0f ? StartFuel : fuel;
         }
@@ -95,7 +100,8 @@ namespace VikingFoodPlus
             long now = ZNet.instance.GetTime().Ticks;
             long last = zdo.GetLong(TimeKey, 0L);
             float fuel = GetFuel();
-            if (last > 0L && now > last)
+            if (Infinite) fuel = MaxFuel;
+            else if (last > 0L && now > last)
             {
                 double seconds = (now - last) / 10000000.0;
                 fuel -= (float)(seconds / Mathf.Max(1f, SecPerFuel));
@@ -155,6 +161,7 @@ namespace VikingFoodPlus
         public string OnSwitchHover()
         {
             if (nview == null || !nview.IsValid()) return "";
+            if (Infinite) return Loc("$vfp_fire ( $vfp_fire_fuel " + Mathf.RoundToInt(MaxFuel) + "/" + Mathf.RoundToInt(MaxFuel) + " )");
             string text = "$vfp_fire ( $vfp_fire_fuel " + Mathf.CeilToInt(GetFuel()) + "/" + Mathf.RoundToInt(MaxFuel) + " )"
                 + "\n[<color=yellow><b>$KEY_Use</b></color>] $vfp_fire_add";
             return Loc(text);
@@ -162,6 +169,7 @@ namespace VikingFoodPlus
 
         public bool OnSwitchUse(Switch caller, Humanoid user, ItemDrop.ItemData item)
         {
+            if (Infinite) return false;   // immer voll: kein Holz noetig
             if (item != null && (item.m_shared == null || item.m_shared.m_name != FuelItemName)) return false;
             return TryAddFuel(user);
         }

@@ -107,7 +107,7 @@ namespace VikingFoodPlus
         private ConfigEntry<bool> recipeGroups;
         private ConfigEntry<string> sortButtons;
         private ConfigEntry<bool> showFermentTime;
-        private ConfigEntry<int> drinkSound, kegSound;
+        private const int DrinkSoundVariant = 1, KegSoundVariant = 2;   // 1 = Ruelpser, 2 = Trinken + Ruelpser
         private readonly Dictionary<int, EffectList> drinkSounds = new Dictionary<int, EffectList>();
         internal static bool ShowFermentTime = true;
         private readonly Dictionary<string, ConfigEntry<bool>> drinkEnabled = new Dictionary<string, ConfigEntry<bool>>();
@@ -123,32 +123,28 @@ namespace VikingFoodPlus
 
         private void BindDrinkConfig()
         {
-            drinksEnabled = Config.Bind("Drinks", "Enabled", true, "Getraenke (Einzelmets und Metfaesschen). Neustart noetig.");
-            drinksAtMeadKetill = Config.Bind("Drinks", "SinglesAtMeadKetill", true,
+            drinksEnabled = Config.Bind(SecDrinks, "Enabled", true, "Getraenke (Einzelmets und Metfaesschen). Neustart noetig.");
+            drinksAtMeadKetill = Config.Bind(SecDrinks, "SinglesAtMeadKetill", true,
                 "Met-Basis der Einzelmets am Valheim-Metkessel herstellen (Standard). Neustart noetig.");
-            drinksAtRuneCauldron = Config.Bind("Drinks", "SinglesAtRuneCauldron", false,
+            drinksAtRuneCauldron = Config.Bind(SecDrinks, "SinglesAtRuneCauldron", false,
                 "Met-Basis der Einzelmets zusaetzlich am Runenkessel herstellen. Neustart noetig.");
-            drinksInVanillaFermenter = Config.Bind("Drinks", "SinglesInVanillaFermenter", true,
+            drinksInVanillaFermenter = Config.Bind(SecDrinks, "SinglesInVanillaFermenter", true,
                 "Einzelmets im Valheim-Fermenter gaeren (Standard). Im Gaerfass gehen sie immer. Neustart noetig.");
-            drinkFermentTime = Config.Bind("Drinks", "FermentTime", 0f,
-                new ConfigDescription("Gaerzeit im Gaerfass in Sekunden. 0 = wie der Valheim-Fermenter. Neustart noetig.", new AcceptableValueRange<float>(0f, 20000f)));
-            drinkMaxActive = Config.Bind("Drinks", "MaxActive", 2,
+            drinkFermentTime = Config.Bind(SecDrinks, "FermentTime", 2400f,
+                new ConfigDescription("Gaerzeit im Gaerfass in Sekunden. 2400 = wie der Valheim-Fermenter (40 min, Standard). Neustart noetig.", new AcceptableValueRange<float>(0f, 20000f)));
+            drinkMaxActive = Config.Bind(SecDrinks, "MaxActive", 2,
                 new ConfigDescription("Hoechstens so viele Getraenke gleichzeitig. Beim naechsten endet das aelteste. Sofort wirksam.", new AcceptableValueRange<int>(1, 11)));
-            drinkGroupBonus = Config.Bind("Drinks", "GroupBonus", 0.05f,
+            drinkGroupBonus = Config.Bind(SecDrinks, "GroupBonus", 0.05f,
                 new ConfigDescription("Gelage-Bonus: zusaetzliche Staerke der Metfaesschen, wenn beim Trinken mind. 3 Spieler in der Naehe sind (0.05 = +5 %). Neustart noetig.", new AcceptableValueRange<float>(0f, 0.5f)));
-            drinkRestBonus = Config.Bind("Drinks", "RestBonus", 0.5f,
+            drinkRestBonus = Config.Bind(SecDrinks, "RestBonus", 0.5f,
                 new ConfigDescription("Rast-Bonus der Metfaesschen: so viel schneller wird man ausgeruht (0.5 = 50 % schneller). Neustart noetig.", new AcceptableValueRange<float>(0f, 2f)));
-            drinkRowerMax = Config.Bind("Drinks", "RowerMaxBonus", 0.12f,
+            drinkRowerMax = Config.Bind(SecDrinks, "RowerMaxBonus", 0.12f,
                 new ConfigDescription("Ruderer-Fass: hoechstes Tempo-Plus (0.12 = +12 %). Neustart noetig.", new AcceptableValueRange<float>(0f, 1f)));
-            drinkSound = Config.Bind("Drinks", "DrinkSound", 1,
-                new ConfigDescription("Trinkgeraeusch der Einzelmets: 0 = aus, 1 = Ruelpser, 2 = Trinken + Ruelpser. Neustart noetig.", new AcceptableValueRange<int>(0, 2)));
-            kegSound = Config.Bind("Drinks", "KegSound", 2,
-                new ConfigDescription("Trinkgeraeusch der Metfaesschen: 0 = aus, 1 = Ruelpser, 2 = Trinken + Ruelpser. Neustart noetig.", new AcceptableValueRange<int>(0, 2)));
-            showFermentTime = Config.Bind("Drinks", "ShowFermentTime", true,
+            showFermentTime = Config.Bind(SecDrinks, "ShowFermentTime", true,
                 "Gaerfass: beim Drueberschauen die Restzeit bis fertig anzeigen. Sofort wirksam.");
-            recipeGroups = Config.Bind("Drinks", "RecipeGroups", true,
-                "Runenkessel: Rezepte in die aufklappbaren Gruppen Essen und Met teilen. Neustart noetig.");
-            sortButtons = Config.Bind("General", "SortButtons", "RuneCauldron",
+            recipeGroups = Config.Bind(SecGeneral, "RecipeGroups", true,
+                "Runenkessel: Rezepte in aufklappbare Gruppen teilen (Essen, Geheimrezepte, Met). Neustart noetig.");
+            sortButtons = Config.Bind(SecGeneral, "SortButtons", "RuneCauldron",
                 new ConfigDescription("Sortier-Knoepfe (Gesundheits-, Ausdauer-, Eitr-Trank) oben rechts im Herstellmenue: Off = aus, RuneCauldron = nur am Runenkessel, " +
                     "Cooking = an allen Koch-Stationen (Runenkessel, Kessel, Zubereitungstisch, Ofen), All = an jeder Werkbank/Station. Sofort wirksam.",
                     new AcceptableValueList<string>("Off", "RuneCauldron", "Cooking", "All")));
@@ -398,15 +394,14 @@ namespace VikingFoodPlus
             se.m_tooltip = "$vfp_drinkfx_" + d.Id.ToLowerInvariant() + "_tip";
             se.m_category = "vfp_drink_" + d.Id.ToLowerInvariant();
             se.m_ttl = drinkDuration[d.Id].Value;
-            var sound = GetDrinkSound(d.Group ? kegSound.Value : drinkSound.Value);
+            var sound = GetDrinkSound(d.Group ? KegSoundVariant : DrinkSoundVariant);
             if (sound != null) se.m_startEffects = sound;
             else if (drinkStartEffects != null) se.m_startEffects = drinkStartEffects;
             se.Kind = d.Id;
             se.Group = d.Group;
             se.BaseStrength = drinkStrength[d.Id].Value;
             se.Strength = se.BaseStrength;
-            var icon = LoadSprite("Mead_" + d.Id);
-            if (icon == null) icon = LoadSprite("Keg_" + d.Id);
+            var icon = LoadSprite((d.Group ? "Keg_" : "Mead_") + d.Id);   // Faesser haben nur Keg-Icons
             if (icon != null) se.m_icon = icon;
             if (d.Id == "Skald")
             {
@@ -695,6 +690,7 @@ namespace VikingFoodPlus
             {
                 if (harmony == null) harmony = new Harmony(Guid);
                 harmony.CreateClassProcessor(typeof(RecipeGroups.Patch)).Patch();
+                try { harmony.CreateClassProcessor(typeof(RecipeGroups.LockedDetails)).Patch(); } catch (Exception ex) { Logger.LogWarning("Geheimrezept-Hinweis: " + ex.Message); }
             }
             catch (Exception ex) { Logger.LogWarning("Rezept-Gruppen / Sortierung nicht aktiv: " + ex.Message); }
         }

@@ -1,6 +1,6 @@
 {
   "vfp_station": "Runic Cauldron",
-  "vfp_station_desc": "A runic cauldron for preparing special dishes. Has a built-in fire: add wood like at a campfire.",
+  "vfp_station_desc": "A runic cauldron for preparing special dishes. Has a built-in fire that always burns.",
   "vfp_fermentbarrel": "Fermentation Barrel",
   "vfp_fermentbarrel_desc": "Runic Cauldron upgrade. Raises the cooking station level to 2. Place near the Runic Cauldron.",
   "vfp_runedryingrack": "Runic Drying Rack",

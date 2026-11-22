@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.5.3")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.6.14")]
     [BepInDependency(Jotunn.Main.ModGuid)]
     public partial class VikingFoodPlus : BaseUnityPlugin
     {
@@ -21,9 +21,11 @@ namespace VikingFoodPlus
         private ConfigEntry<bool> enabledMod;
         private ConfigEntry<string> distilleryCost;
         private ConfigEntry<bool> integratedFire;
+        private ConfigEntry<bool> fireInfinite;
         private ConfigEntry<float> fireHeightOffset;
-        private ConfigEntry<float> extensionScale;
-        private ConfigEntry<float> extensionDistance;
+        private const float ExtensionScale = 0.75f, ExtensionDistance = 10f;
+        // Config-Abschnitte; die Ziffern sorgen fuer die Reihenfolge in der Datei (BepInEx sortiert alphabetisch)
+        internal const string SecGeneral = "1 - General", SecFood = "2 - Food", SecDrinks = "3 - Drinks", SecSecret = "4 - Secret Recipes", SecSeasonal = "5 - Seasonal";
         private ConfigEntry<bool> foodBuffs;
         private ConfigEntry<float> cookTime;
         private ConfigEntry<bool> fireSmoke;
@@ -142,7 +144,7 @@ namespace VikingFoodPlus
 
         private void Awake()
         {
-            enabledMod = Config.Bind("General", "Enabled", true, "Enable mod content; restart required.");
+            enabledMod = Config.Bind(SecGeneral, "Enabled", true, "Viking's Feast an/aus. Neustart noetig.");
             foreach (var food in Foods)
             {
                 // Seit 1.4.2 "Dish - " statt "Food - ": alte Config-Werte (z. B. alte Zutaten) werden so automatisch ignoriert.
@@ -155,51 +157,39 @@ namespace VikingFoodPlus
                 ingredients[food.Id] = Config.Bind("Dish - " + food.Id, "Ingredients", food.Ingredients, "Prefab:count comma-separated; restart required.");
                 portions[food.Id] = Config.Bind("Dish - " + food.Id, "Portions", 2, new ConfigDescription("Output portions; restart required.", new AcceptableValueRange<int>(1, 10)));
             }
-            // Neue Balance (1.4.5, 80-110 % der Valheim-Bestwerte): Leben/Ausdauer/Eitr einmalig auf die neuen Standardwerte setzen,
-            // sonst behalten bestehende Configs die alten, zu starken Werte.
-            var balance = Config.Bind("General", "BalanceVersion", 0, "Intern: Stand der Gericht-Werte. Nicht aendern.");
-            if (balance.Value < 4)
-            {
-                foreach (var food in Foods)
-                {
-                    health[food.Id].Value = (float)health[food.Id].DefaultValue;
-                    stamina[food.Id].Value = (float)stamina[food.Id].DefaultValue;
-                    eitr[food.Id].Value = (float)eitr[food.Id].DefaultValue;
-                }
-                balance.Value = 4;
-            }
-            distilleryCost = Config.Bind("Piece - IceDistillery", "Requirements", "Crystal:20,DragonTear:5,BlackMetalScrap:10,YggdrasilWood:2",
+            distilleryCost = Config.Bind(SecGeneral, "IceDistilleryCost", "Crystal:20,DragonTear:5,BlackMetalScrap:10,YggdrasilWood:2",
                 "Baukosten der Eisdestillerie als Prefab:Anzahl, kommagetrennt. Unbekannte Prefabs werden uebersprungen (Warnung im Log). Namen per Konsole 'spawn' + Autovervollstaendigung pruefen; Neustart noetig.");
-            integratedFire = Config.Bind("Piece - RuneCauldron", "IntegratedFire", true,
-                "Eingebautes Feuer unter dem Runenkessel. Brennt wie ein Lagerfeuer: Holz nachlegen, brennt herunter, geht aus. false = der Kessel braucht wie in Vanilla ein separates Feuer darunter. Neustart noetig.");
-            fireHeightOffset = Config.Bind("Piece - RuneCauldron", "FireHeightOffset", 0f,
+            integratedFire = Config.Bind(SecGeneral, "CauldronFire", true,
+                "Eingebautes Feuer unter dem Runenkessel (ob es Holz braucht, steuert CauldronFireInfinite). false = der Kessel braucht wie in Vanilla ein separates Feuer darunter. Neustart noetig.");
+            fireInfinite = Config.Bind(SecGeneral, "CauldronFireInfinite", true,
+                "Das eingebaute Feuer unter dem Runenkessel bleibt immer voll, Holz geht nie aus und muss nicht nachgelegt werden. false = brennt wie ein Lagerfeuer herunter. Sofort wirksam.");
+            CauldronFire.InfiniteFuel = () => fireInfinite.Value;
+            fireHeightOffset = Config.Bind(SecGeneral, "CauldronFireHeight", 0f,
                 "Hoehe des eingebauten Feuers relativ zum Kessel in Metern (z. B. -0.2 oder 0.1). Neustart noetig.");
-            extensionScale = Config.Bind("Piece - Extensions", "Scale", 0.75f,
-                new ConfigDescription("Groesse der Kessel-Erweiterungen (Gaerfass, Trockengestell, Eisdestillerie). 1 = Originalgroesse. Neustart noetig.", new AcceptableValueRange<float>(0.3f, 1.5f)));
-            extensionDistance = Config.Bind("Piece - Extensions", "MaxDistance", 10f,
-                new ConfigDescription("Maximaler Abstand in Metern, in dem eine Erweiterung noch zum Runenkessel zaehlt (Vanilla-Werkbank: 5). Naeher geht immer. Neustart noetig.", new AcceptableValueRange<float>(2f, 30f)));
-            foodBuffs = Config.Bind("General", "FoodBuffs", true,
+            foodBuffs = Config.Bind(SecFood, "FoodBuffs", true,
                 "Einige Gerichte geben zusaetzlich einen kleinen Effekt fuer 10 Minuten (z. B. etwas Frostschutz). Neustart noetig.");
-            cookTime = Config.Bind("Piece - RuneCauldron", "CookTime", 0f,
+            cookTime = Config.Bind(SecGeneral, "CookTime", 0f,
                 new ConfigDescription("Kochzeit am Runenkessel in Sekunden. 0 = wie in Valheim (Standard). Groessere Werte verlaengern den Fortschrittsbalken beim Herstellen. Sofort wirksam.", new AcceptableValueRange<float>(0f, 15f)));
-            fireSmoke = Config.Bind("Piece - RuneCauldron", "FireSmoke", true,
+            fireSmoke = Config.Bind(SecGeneral, "CauldronFireSmoke", true,
                 "Rauch des eingebauten Kesselfeuers (wie beim Lagerfeuer). false = Feuer ohne Rauch. Neustart noetig.");
-            cookingStation = Config.Bind("General", "CookingStation", "RuneCauldron",
+            cookingStation = Config.Bind(SecGeneral, "CookingStation", "RuneCauldron",
                 new ConfigDescription("Wo die Gerichte gekocht werden: RuneCauldron = nur am Runenkessel (Standard), Cauldron = nur am normalen Valheim-Kessel, Both = an beiden. Die benoetigte Kochstufe gilt auch am Valheim-Kessel (dort ueber dessen eigene Erweiterungen). Neustart noetig.",
                 new AcceptableValueList<string>("RuneCauldron", "Cauldron", "Both")));
-            feastsEnabled = Config.Bind("Feasts", "Enabled", true,
+            feastsEnabled = Config.Bind(SecFood, "Feasts", true,
                 "Festmahl-Platten (Moorschmaus, Goldene Erntetafel, Nordlicht-Festtafel). Werden mit dem Servierbrett aufgestellt. Neustart noetig.");
-            feastStation = Config.Bind("Feasts", "Station", "PrepTable",
+            feastStation = Config.Bind(SecFood, "FeastStation", "PrepTable",
                 new ConfigDescription("Wo die Festmahl-Platten hergestellt werden: PrepTable = Zubereitungstisch (wie in Valheim), RuneCauldron = Runenkessel (Stufe 2/3/4). Neustart noetig.",
                 new AcceptableValueList<string>("PrepTable", "RuneCauldron")));
-            seasonalEnabled = Config.Bind("Seasonal", "Enabled", true,
+            seasonalEnabled = Config.Bind(SecSeasonal, "Enabled", true,
                 "Saisongerichte (Mittsommer-Beerenkuchen, Grinsende Rübenbrühe, Julfest-Braten). Neustart noetig.");
-            seasonalAlways = Config.Bind("Seasonal", "AlwaysAvailable", false,
-                "true = Saisongerichte das ganze Jahr kochbar. false = nur waehrend Valheims Mittsommer-, Halloween- und Julfest-Zeit. Neustart noetig.");
+            seasonalAlways = Config.Bind(SecSeasonal, "AlwaysAvailable", true,
+                "true = Saisongerichte das ganze Jahr kochbar (Standard). false = nur waehrend Valheims Mittsommer-, Halloween- und Julfest-Zeit. Neustart noetig.");
             BindDrinkConfig();
+            BindSecretConfig();
             if (!enabledMod.Value) return;
             if (drinksEnabled.Value) ApplyDrinkStatics();
-            RecipeGroups.GroupsEnabled = drinksEnabled.Value && recipeGroups.Value;
+            if (secretsEnabled.Value) ApplySecretPatches();
+            RecipeGroups.GroupsEnabled = (drinksEnabled.Value || secretsEnabled.Value) && recipeGroups.Value;
             ApplyRecipeGroups();   // Gruppen und/oder Sortier-Knoepfe (beides per Config abschaltbar)
             ItemManager.OnItemsRegistered += AssignSeasonalRecipes;
             PrefabManager.OnVanillaPrefabsAvailable += Register;
@@ -232,6 +222,8 @@ namespace VikingFoodPlus
                 try { if (foodEnabled[food.Id].Value) RegisterFood(food); }
                 catch (Exception ex) { Logger.LogWarning("Rezept " + food.Id + " übersprungen: " + ex.Message); }
             }
+            try { RegisterSecrets(); }
+            catch (Exception ex) { Logger.LogError("Geheimrezepte: " + ex); }
             if (feastsEnabled.Value)
             {
                 try { RegisterFeasts(); }
@@ -245,7 +237,7 @@ namespace VikingFoodPlus
             try { if (foodEnabled["HeartyFlatbread"].Value) RegisterFlatbreadBaking(); }
             catch (Exception ex) { Logger.LogError("Fladenbrot-Kochofen: " + ex); }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.5.3 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.6.14 registration complete.");
         }
 
         private void RegisterStation()
@@ -780,7 +772,7 @@ namespace VikingFoodPlus
             if (ext == null) throw new Exception("StationExtension missing");
             // Groesserer Wirkungsabstand zum Kessel (naeher platzieren funktioniert weiterhin).
             var distField = typeof(StationExtension).GetField("m_maxStationDistance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (distField != null && distField.FieldType == typeof(float)) distField.SetValue(ext, extensionDistance.Value);
+            if (distField != null && distField.FieldType == typeof(float)) distField.SetValue(ext, ExtensionDistance);
             else Logger.LogWarning("Erweiterung " + id + ": StationExtension.m_maxStationDistance nicht gefunden, Abstand bleibt Vanilla");
             var field = typeof(StationExtension).GetField("m_craftingStation");
             if (field == null) throw new Exception("StationExtension.m_craftingStation missing");
@@ -798,7 +790,7 @@ namespace VikingFoodPlus
                 try { SetupBarrelStates(go); } catch (Exception ex) { Logger.LogWarning("Gaerfass-Zustaende: " + ex.Message); }
             }
             // Erweiterung insgesamt kleiner (Modell und Kollision zusammen).
-            go.transform.localScale = Vector3.one * extensionScale.Value;
+            go.transform.localScale = Vector3.one * ExtensionScale;
             PieceManager.Instance.AddPiece(new CustomPiece(go, true, new PieceConfig {
                 PieceTable = "_HammerPieceTable", Category = "Crafting", Requirements = requirements
             }));
@@ -830,6 +822,7 @@ namespace VikingFoodPlus
         /// Objektstaender), skaliert auf die breiteste Seite des Vanilla-Modells.</summary>
         /// <summary>Feinkorrektur einzelner Modelle: Groessenfaktor, Hoehe in Metern, 1 = gegen die Schraeglage von "attach" gerade ausrichten.</summary>
         private static readonly Dictionary<string, float[]> DishModelTweaks = new Dictionary<string, float[]> {
+            { "VFP_Secret_FulingFriedEgg", new[] { 0f, 0.01f, 0f } },   // sehr flach: minimal anheben
         };
 
         internal void ApplyDishModel(GameObject item, string model)
@@ -1148,6 +1141,7 @@ namespace VikingFoodPlus
                 de[key + "_desc"] = feast.DescDe; en[key + "_desc"] = feast.DescEn;
             }
             if (drinksEnabled.Value) AddDrinkTranslations(de, en);
+            if (secretsEnabled.Value) AddSecretTranslations(de, en);
             de["vfp_sort_health"] = "Gesundheit"; en["vfp_sort_health"] = "Health";
             de["vfp_sort_stamina"] = "Ausdauer"; en["vfp_sort_stamina"] = "Stamina";
             de["vfp_sort_eitr"] = "Eitr"; en["vfp_sort_eitr"] = "Eitr";

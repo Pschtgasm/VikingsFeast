@@ -1,5 +1,78 @@
 # Changelog
 
+## 1.6.14
+- Fixed: in 1.6.13 the scroll roll was not active because Valheim renamed the method that opens chests. Both names are now supported.
+
+## 1.6.13
+- Fixed: recipe scrolls did not appear in chests on servers. The scroll is now rolled when a player opens a matching chest for the first time, no longer when the chest is created. This works no matter which player loaded the dungeon first, and also for chests that existed before the update. Each chest rolls only once.
+- `LogChests` now also writes the scroll roll for each chest to the log (matching chest, roll, recipe already known).
+
+## 1.6.12
+- Changed: the built-in fire under the Runic Cauldron now always stays full. The wood never runs out and you no longer need to add any.
+- New config option `General > CauldronFireInfinite` (default `true`). Set it to `false` to have the fire burn down like a campfire again. Takes effect immediately.
+
+## 1.6.11
+- Includes everything from 1.5.3 (3D models for all 24 regular dishes and the 3 seasonal dishes).
+- Changelog now also lists 1.5.3.
+
+## 1.6.10
+- The secret dishes now also have the same size of about 48 cm on item stands and on the ground as all other dishes, and stand upright.
+
+## 1.6.9
+- Sizes of the secret dishes on item stands evened out: long, narrow dishes (sulphur skewer, blood sausage, roulade) are larger now, so all of them look about the same size.
+- Removed the harmless "Icon fehlt: Mead_…" warnings for the four group kegs in the log.
+
+## 1.6.8
+- Fixed: in 1.6.7 the secret dishes were invisible on item stands and on the ground (the fixed size was not converted to the scale of the model, so they became tiny).
+
+## 1.6.7
+- Fixed: secret dishes could lie tilted on item stands because they inherited the orientation of different vanilla foods. All secret dishes now use the same upright base (like Ymir's pancake tower) and a fixed size of about 40 cm.
+
+## 1.6.6
+- Fixed: the Fuling fried egg still disappeared partly into neighbouring table planks next to an item stand. It is now a bit smaller (80%) and lies 7 cm higher.
+
+## 1.6.5
+- Fixed: the Fuling fried egg lay tilted on item stands (one side and the back bacon slice sank into the stand). It is now levelled and sits on top.
+- Build script copies the test DLL directly into `BepInEx\plugins` of the test profile.
+
+## 1.6.4
+- Fixed: Ymir's pancake tower was too small on item stands (now 1.8 times larger).
+- Fixed: the Fuling fried egg sank halfway into item stands; it now lies on top.
+- Fixed: the Deep North scroll (Ymir's pancake tower) is now sold after Kall Fimbulbringer's final phase (`defeated_frozenking_p3`).
+
+## 1.6.3
+- Changed: Haldor now sells every recipe scroll once the boss of its biome has been defeated in your world (The Elder, Bonemass, Moder, Yagluth, The Queen, Fader, Kall Fimbulbringer). Before, only Haldor (grave shroom) and the Bog Witch (blood sausage) sold scrolls, without any condition. Scrolls you already know are not offered.
+- New config per dish: `SoldBy` (trader, default `haldor`) and `SoldAfterBoss` (global key of the boss, empty = right away).
+- New: own 3D models for the 7 secret dishes on the ground and on item stands.
+- The game log now lists all bosses with their keys once per start, to check `SoldAfterBoss`.
+
+## 1.6.2
+- New: own 3D models for the seasonal dishes on the ground and on item stands (Midsummer berry cake on a board, grinning turnip broth with slime blobs, Yule roast with carrots and mistletoe). Before, they showed the vanilla jam jar, turnip stew and deer meat.
+
+## 1.6.1
+- Config reorganised: `1 - General`, `2 - Food`, `3 - Drinks`, `4 - Secret Recipes`, `5 - Seasonal` at the top, single dishes and drinks at the end. General settings start with their default values once; settings for single dishes and drinks are kept.
+- Seasonal dishes can now be cooked all year by default (`5 - Seasonal > AlwaysAvailable = true`).
+- Fermentation time of the barrel now shows its real default (`FermentTime = 2400` s, like the vanilla Fermenter).
+- Removed from the config: drinking sounds (fixed: burp for single meads, drinking + burp for kegs), size and range of the upgrades (fixed: 0.75 and 10 m) and the internal `BalanceVersion`.
+
+## 1.6.0
+- New: 7 secret recipes, one per biome from the Black Forest to the Deep North. Each has its own icon and a 10-minute special effect:
+
+  | Biome | Dish | Health | Stamina | Eitr | Effect |
+  |---|---|---|---|---|---|
+  | Black Forest | Stuffed grave shroom | 44 | 16 | – | Sneaking costs 25% less stamina |
+  | Swamp | Bog witch blood sausage | 54 | 19 | – | +10% damage against undead |
+  | Mountains | Frost wolf roulade | 22 | 64 | – | 50% less fall damage |
+  | Plains | Fuling fried egg | 50 | 50 | – | Blocking costs 15% less stamina |
+  | Mistlands | Dvergr mushroom loaf | 30 | 22 | 75 | Sprinting costs 15% less stamina |
+  | Ashlands | Sulphur skewer | 104 | 36 | – | Dodge rolls cost 20% less stamina |
+  | Deep North | Ymir's pancake tower | 40 | 88 | 32 | You stagger 25% less |
+
+  No secret dish is stronger in total than the best Valheim food of its biome.
+- New: recipe scrolls. Secret recipes are learned with a scroll (right-click). Scrolls are found in chests of matching places (burial chambers, troll caves, sunken crypts, frost caves, fuling villages, dvergr ruins and infested mines, Ashlands fortresses, Deep North) and sold by Haldor and the Bog Witch. Each scroll has its own icon and a wax seal in the colour of its biome. Once you know a recipe, its scroll no longer appears in chests or at traders.
+- New: the group "Secret recipes (x/7)" at the Runic Cauldron. Learned recipes are listed normally; recipes not learned yet appear as "???"; clicking one shows on the right where its scroll can be found, without revealing the dish.
+- New config section `Secret Recipes`: `Enabled`, `NeedScroll` (false = secret recipes unlock like normal recipes), `ScrollChance` (default 12%), `ScrollPrice` (default 250 coins), `LogChests` (writes chest names to the log to adjust the loot places). Per dish `Secret - <ID>`: on/off, values, ingredients, portions, `LootChests` and `Trader`.
+
 ## 1.5.3
 - New: own 3D models for all 24 dishes and the 3 seasonal dishes (Midsummer Cake, Turnip Ghost Soup, Yule Roast). They match their icons and are shown when dropped on the ground and on item stands.
 - On item stands all dishes now stand upright and have a uniform size of about 48 cm. Before, they showed the vanilla base foods, some of them tilted.
