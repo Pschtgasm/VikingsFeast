@@ -1,8 +1,8 @@
 # Viking's Feast
 
-**24 hand-crafted Viking dishes, 11 meads, a Runic Cauldron that grows with your journey, and three station upgrades with fully custom 3D models.**
+**24 hand-crafted Viking dishes, 11 meads, 6 animal feeds, a Runic Cauldron that grows with your journey, and three station upgrades with fully custom 3D models.**
 
-From a simple boar herb roast in the Meadows to an Essence of Eternal Frost in the Deep North, Viking's Feast adds a full cooking progression for every biome, all cooked at the **Runic Cauldron**. Brew meads with small, useful effects Valheim does not have, and share mead kegs with your crew.
+From a simple boar herb roast in the Meadows to an Essence of Eternal Frost in the Deep North, Viking's Feast adds a full cooking progression for every biome, all cooked at the **Runic Cauldron**. Brew meads with small, useful effects Valheim does not have, share mead kegs with your crew, and cook feed that helps you tame, breed and strengthen your animals.
 
 ![Runic Cauldron](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/runic_cauldron_stages.png)
 
@@ -37,6 +37,7 @@ This is the support repository for **Viking's Feast**.
 ## ✨ Features
 
 - **24 new recipes** plus **3 seasonal dishes** for Valheim's Midsummer, Halloween and Yule events, covering Meadows, Black Forest, Swamp, Mountains, Plains, Mistlands, Ashlands and the Deep North
+- **6 animal feeds** *(new in 1.7.0)*: one per biome for boar, wolf, lox, asksvin and hen. Tame faster, breed faster, get offspring with an extra star or make your animals stronger. Fed animals glow in the colour of their feed
 - **7 secret recipes** *(new in 1.6.0)*: one per biome, learned from recipe scrolls found in chests or bought from traders, each with its own special effect
 - **11 drinks** *(new in 1.5.0)*: 7 single meads and 4 mead kegs for groups, each with a small effect Valheim does not have
 - **3 feast platters** for groups, placed with the Serving Tray
@@ -44,12 +45,12 @@ This is the support repository for **Viking's Feast**.
 - **Four visual stages**: the cauldron changes its look with every upgrade (Standard → Swamp → Mistlands → Deep North), each with its own glowing sign: boar head, dead tree, Seeker, snowflake
 - **Three station upgrades**, each with its own custom model that also changes with the cauldron stage
 - **Fermentation Barrel** brews mead too: no roof needed, shows its state and the remaining time
-- **Tidy cooking menu**: at the Runic Cauldron the recipes are split into the collapsible groups **Food** and **Mead**. Three potions at the top right sort the dishes by health, stamina or eitr (also at other stations if you like, see config)
+- **Tidy cooking menu**: at the Runic Cauldron the recipes are split into the collapsible groups **Food**, **Secret recipes**, **Animal feed** and **Mead**. Three potions at the top right sort the dishes by health, stamina or eitr (also at other stations if you like, see config)
 - **Valheim-style icons** for every dish, drink and station
 - **Small food effects**: 5 dishes give a mild extra effect for 10 minutes
 - **Hearty Flatbread**: prepare the dough at the Runic Cauldron, then bake it in the vanilla oven
 - **Fully configurable**: values, ingredients, portions, effects, stations and much more
-- **German and English** localization
+- **German and English** localization, with a config option to choose the language of the mod texts *(new in 1.6.1)*
 
 ---
 
@@ -161,6 +162,26 @@ The effects are intentionally weaker than vanilla resistance meads and can be sw
 
 ---
 
+## 🐗 Animal feed *(new in 1.7.0)*
+
+![Animal Feed](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/animal_feed_showcase.png)
+
+Six feeds for **boar, wolf, lox, asksvin and hen**, cooked at the Runic Cauldron (group **Animal feed**). Each feed comes in its own sack with a symbol and lasts **30 minutes**. Fed animals **glow** in the colour of their feed, and their hover text shows each active feed with its remaining time.
+
+| Biome | Feed | Level | Ingredients | Effect | Glow |
+|---|---|:-:|---|---|---|
+| 🌿 Meadows | Taming herb | 1 | Dandelion 4, Raspberries 4, Honey 1 | Wild animals tame **twice as fast**, stay calm and don't attack (hitting them cancels this for 10 s) | light green |
+| 🌲 Black Forest | Freya's lure | 1 | Blueberries 4, Carrot 3, Yellow mushroom 2 | Faster breeding: pregnancy chance ×2, pregnancy time ÷2 | pink |
+| 🐸 Swamp | Norns' blessing | 2 | Turnip 3, Thistle 3, Guck 1 | **25 %** chance that an offspring is born with **one more star** (up to 2 stars) | dark green |
+| 🏔️ Mountains | Fenrir's bite | 2 | Wolf meat 2, Onion 1, Fenris claw 1 | **+25 %** damage | icy blue |
+| 🌾 Plains | Armor grain | 2 | Barley 6, Flax 3, Cloudberries 3 | **25 %** less damage taken | golden |
+| 🌋 Ashlands | Ember shell | 3 | Vineberries 4, Smoke puffs 3, Proustite powder 1 | Fire damage **halved**, heals 2 % health every 5 s | orange |
+
+**How to feed:** look at the animal and press the hotbar key, or drop the feed on the ground. Hungry animals walk to it, fed animals eat it when they stand right next to it. Feed also counts as a meal (taming and breeding).
+**At most 2 feeds** per animal: a third one replaces the oldest, the same feed again restarts its time. With two feeds the glow alternates between both colours. Works in multiplayer, feeds are stored on the animal. Feed sacks can also be placed on item stands.
+
+---
+
 ## 📜 Secret recipes *(new in 1.6.0)*
 
 One special dish per biome from the Black Forest to the Deep North. You can only cook them after learning the recipe from a **recipe scroll** (right-click the scroll). Scrolls are hidden in chests, and Haldor sells each scroll once you have defeated the boss of its biome. Each dish has its own effect for 10 minutes.
@@ -223,6 +244,7 @@ Ferments mead like the vanilla Fermenter, but **without a roof**. You can see wh
 
 **1 - General**
 - Mod on/off (`Enabled`)
+- Language of the mod texts (`Language`): `Auto` (default: German for a German game, English for every other language), `English` or `German`. Each player sets this in their own config
 - Where the dishes are cooked (`CookingStation`): `RuneCauldron` (default), `Cauldron` (vanilla cauldron) or `Both`
 - Recipe groups at the Runic Cauldron (`RecipeGroups`, default on) and sort buttons (`SortButtons`: `RuneCauldron` (default), `Cooking`, `All` or `Off`)
 - Built-in cauldron fire (`CauldronFire`, default on), whether it always stays full (`CauldronFireInfinite`, default on), its height (`CauldronFireHeight`) and smoke (`CauldronFireSmoke`), cooking time (`CookTime`, `0` = vanilla)
@@ -246,10 +268,15 @@ Ferments mead like the vanilla Fermenter, but **without a roof**. You can see wh
 **5 - Seasonal**
 - Seasonal dishes on/off (`Enabled`) and all year (`AlwaysAvailable`, default on)
 
+**6 - Animal Feed**
+- Animal feed on/off (`Enabled`), glow on/off (`Glow`, takes effect immediately), duration (`Duration`, default `1800` s)
+- Effect strength: `TamingSpeed`, `TamingCalm`, `BreedingSpeed`, `StarChance`, `MaxStars`, `DamageBonus`, `DamageReduction`, `FireReduction`, `HealPercent`
+
 **Single dishes and drinks** (at the end of the file)
 - `Dish - <ID>`: on/off, health, stamina, eitr, duration, regen, ingredients (`Prefab:count`), portions
 - `Drink - <ID>`: on/off, ingredients, effect strength, duration
 - `Secret - <ID>`: on/off, values, ingredients, portions, chests (`LootChests`), trader (`SoldBy`) and boss key (`SoldAfterBoss`)
+- `Feed - <ID>`: on/off, ingredients, portions
 
 A game restart is required after most changes. On servers, everyone should use the same config.
 
@@ -274,11 +301,15 @@ Multiplayer: install the mod on **all clients and the server**.
 
 ## 🇩🇪 Deutsch
 
-**Viking's Feast** bringt 24 neue Wikinger-Gerichte für jedes Biom, von der Wiese bis zum Hohen Norden. Gekocht wird am **Runenkessel** mit eingebautem Feuer (Holz nachlegen wie beim Lagerfeuer, in der Config abschaltbar), der mit jeder Erweiterung sein Aussehen und sein Leuchtzeichen ändert (Standard → Sumpf → Nebelland → Hoher Norden).
+**Viking's Feast** bringt 24 neue Wikinger-Gerichte für jedes Biom, von der Wiese bis zum Hohen Norden, dazu Met, Geheimrezepte und Tierfutter. Gekocht wird am **Runenkessel** mit eingebautem Feuer (Holz nachlegen wie beim Lagerfeuer, in der Config abschaltbar), der mit jeder Erweiterung sein Aussehen und sein Leuchtzeichen ändert (Standard → Sumpf → Nebelland → Hoher Norden).
 
 - **Gärfass** → Kochstufe 2, gärt außerdem Met (auch ohne Dach, mit Restzeit-Anzeige)
 - **Runen-Trockengestell** → Kochstufe 3
 - **Eisdestillerie** → Kochstufe 4, schaltet die Gerichte des Nordens frei
+
+**Neu in 1.7.0: Tierfutter.** 6 Futter am Runenkessel (Gruppe **Tierfutter**) für Eber, Wolf, Lox, Asksvin und Huhn, eins pro Biom: **Zähmkraut** (doppelt so schnell zahm, Tiere bleiben ruhig), **Freyas Lockfutter** (schnellere Paarung), **Nornensegen** (25 % Chance auf ein Junges mit einem Stern mehr), **Fenrirs Biss** (+25 % Schaden), **Panzerkorn** (25 % weniger Schaden) und **Glutpanzer** (halber Feuerschaden, langsame Heilung). Füttern per Hotbar-Taste (Tier ansehen) oder durch Ablegen auf dem Boden. Jedes Futter wirkt 30 Minuten, höchstens 2 pro Tier. Gefütterte Tiere leuchten in der Farbe ihres Futters, der Hover-Text zeigt die Restzeit. Jedes Futter hat einen eigenen Sack mit Symbol, der auch auf den Objektständer passt.
+
+**Neu in 1.6.1:** Die Sprache der Mod-Texte folgt jetzt zuverlässig der Spielsprache (Deutsch bei deutschem Spiel, sonst Englisch) und lässt sich in der Config unter `1 - General > Language` fest einstellen.
 
 **Neu in 1.6.0: 7 Geheimrezepte**, eins pro Biom vom Schwarzwald bis zum Hohen Norden (Gefüllter Grabpilz, Moorhexen-Blutwurst, Frostwolf-Roulade, Fuling-Spiegelei, Dvergr-Pilzlaib, Schwefelspieß, Ymirs Pfannkuchenturm). Man lernt sie nur über **Rezeptrollen** aus Truhen (Hügelgräber, Krypten, Frosthöhlen, Fuling-Dörfer, Dvergr-Ruinen, Festungen, Hoher Norden) oder bei Haldor, sobald der Boss des jeweiligen Bioms besiegt ist. Jedes Gericht hat einen eigenen Effekt für 10 Minuten. Am Runenkessel stehen sie in der Gruppe **Geheimrezepte**, noch nicht gelernte als **???**. Ein Klick darauf zeigt rechts, wo die Rolle zu finden ist, ohne das Gericht zu verraten.
 
@@ -294,9 +325,9 @@ Dazu kommen drei Saisongerichte zu Mittsommer, Halloween und Julfest sowie drei 
 |---|---|
 | `src/` | C# source code |
 | `Icons/` | Food and build menu icons (embedded into the DLL) |
-| `Models/` | 3D models of the Runic Cauldron, its upgrades, all dishes and the recipe scroll (`.obj` / `.mtl`) |
+| `Models/` | 3D models of the Runic Cauldron, its upgrades, all dishes, the recipe scroll and the animal feed sacks (`.obj` / `.mtl`) |
 | `Translations/` | German and English localization |
-| `tools/` | Python scripts that generate the 3D models |
+| `tools/` | Python scripts that generate the 3D models, and a PowerShell script for the animal feed icons |
 | `docs/notizen/` | Development notes (German) |
 | `docs/images/` | Images for this description |
 

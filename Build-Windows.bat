@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
-set "MODVERSION=1.6.0"
+set "MODVERSION=1.7.0"
 cd /d "%~dp0"
 rem ==========================================================================
 rem  Viking's Feast - Build ohne Eingaben

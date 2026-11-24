@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.7.0
+- New: animal feed. 6 feeds at the Runic Cauldron (new group "Animal feed") for boar, wolf, lox, asksvin and hen. Each feed lasts 30 minutes and makes the animal glow in its colour:
+
+  | Biome | Feed | Station level | Ingredients | Effect | Glow |
+  |---|---|---|---|---|---|
+  | Meadows | Taming herb | 1 | 4 Dandelion, 4 Raspberries, 1 Honey | Wild animals tame twice as fast and stay calm: they are not frightened (taming keeps going) and do not attack players. Hitting the animal cancels this for 10 seconds | light yellow-green |
+  | Black Forest | Freya's lure | 1 | 4 Blueberries, 3 Carrots, 2 Yellow mushrooms | Faster breeding (pregnancy chance x2, pregnancy time /2) | pink |
+  | Swamp | Norns' blessing | 2 | 3 Turnips, 3 Thistle, 1 Guck | 25% chance that an offspring is born with one more star (up to 2 stars) | dark green |
+  | Mountains | Fenrir's bite | 2 | 2 Wolf meat, 1 Onion, 1 Fenris claw | +25% damage | icy blue |
+  | Plains | Armor grain | 2 | 6 Barley, 3 Flax, 3 Cloudberries | 25% less damage taken | golden |
+  | Ashlands | Ember shell | 3 | 4 Vineberries, 3 Smoke puffs, 1 Proustite powder | Fire damage halved, heals 2% health every 5 seconds | orange |
+
+  - Feeding: look at the animal and press the hotbar key (or right-click the feed in the inventory next to the animal), or drop the feed on the ground. Hungry animals walk to it, fed animals eat it when they stand right next to it.
+  - At most 2 feeds per animal at the same time. A third feed replaces the oldest one, the same feed again restarts its time.
+  - Feed also counts as a meal for the animal (taming and breeding).
+  - The hover text of the animal shows each active feed with its remaining time. With 2 feeds the glow alternates between both colours.
+  - Works in multiplayer: active feeds are stored on the animal and apply for all players.
+- New config section `6 - Animal Feed`: `Enabled`, `Glow` (glow on/off, takes effect immediately), `Duration` (default 1800 s), `TamingSpeed`, `TamingCalm`, `BreedingSpeed`, `StarChance`, `MaxStars`, `DamageBonus`, `DamageReduction`, `FireReduction`, `HealPercent`. Per feed `Feed - <ID>`: on/off, ingredients and portions (default 2).
+- New: every feed has its own icon and its own 3D model: an open burlap sack with a cord, filled with feed in the colour of its biome and topped with matching ingredients. Each sack carries its own glowing symbol: taming herb a twig, Freya's lure a heart, Norns' blessing a star, Fenrir's bite two crossed bearded axes, armor grain a Viking round shield, ember shell a flame in a shield.
+- Feed can be placed on item stands like the dishes and has the same size there.
+
+## 1.6.1
+- Fixed: some players saw the mod texts in German although their game was set to another language (reported on a dedicated server). The texts are now registered for every Valheim language: German for German, English for all others.
+- New: `1 - General > Language` (`Auto`, `English`, `German`, default `Auto`). Choose the language of the mod texts yourself, independent of the game language. Each player sets it in their own config.
+
 ## 1.6.0
 - New: 7 secret recipes, one per biome from the Black Forest to the Deep North. Each has its own icon, its own 3D model and a 10-minute special effect:
 

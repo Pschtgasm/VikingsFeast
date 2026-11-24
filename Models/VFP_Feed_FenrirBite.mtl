@@ -1,0 +1,92 @@
+newmtl sack
+Kd 0.620 0.480 0.300
+Ke 0.000 0.000 0.000
+
+newmtl sack_dark
+Kd 0.400 0.290 0.170
+Ke 0.000 0.000 0.000
+
+newmtl sack_inner
+Kd 0.240 0.170 0.100
+Ke 0.000 0.000 0.000
+
+newmtl cord
+Kd 0.720 0.560 0.260
+Ke 0.000 0.000 0.000
+
+newmtl leaf
+Kd 0.260 0.480 0.160
+Ke 0.000 0.000 0.000
+
+newmtl dandelion
+Kd 0.920 0.780 0.180
+Ke 0.100 0.080 0.000
+
+newmtl rasp
+Kd 0.700 0.140 0.200
+Ke 0.000 0.000 0.000
+
+newmtl blue
+Kd 0.200 0.250 0.550
+Ke 0.000 0.000 0.000
+
+newmtl carrot
+Kd 0.850 0.420 0.100
+Ke 0.000 0.000 0.000
+
+newmtl mush_yellow
+Kd 0.900 0.700 0.220
+Ke 0.000 0.000 0.000
+
+newmtl turnip
+Kd 0.450 0.220 0.460
+Ke 0.000 0.000 0.000
+
+newmtl thistle
+Kd 0.420 0.280 0.600
+Ke 0.100 0.050 0.180
+
+newmtl meat
+Kd 0.550 0.220 0.180
+Ke 0.000 0.000 0.000
+
+newmtl claw
+Kd 0.880 0.860 0.800
+Ke 0.000 0.000 0.000
+
+newmtl barley
+Kd 0.860 0.700 0.360
+Ke 0.000 0.000 0.000
+
+newmtl cloud
+Kd 0.940 0.620 0.280
+Ke 0.000 0.000 0.000
+
+newmtl vineberry
+Kd 0.620 0.120 0.300
+Ke 0.080 0.000 0.040
+
+newmtl ember
+Kd 1.000 0.450 0.100
+Ke 0.850 0.300 0.040
+
+newmtl iron
+Kd 0.300 0.300 0.320
+Ke 0.000 0.000 0.000
+
+newmtl haft
+Kd 0.170 0.130 0.110
+Ke 0.000 0.000 0.000
+
+newmtl edge
+Kd 0.880 0.960 1.000
+Ke 0.450 0.550 0.650
+
+newmtl feed
+Kd 0.500 0.240 0.200
+Ke 0.040 0.070 0.110
+
+newmtl rune
+Kd 0.580 0.820 1.000
+Ke 0.320 0.550 0.800
+

@@ -16,7 +16,7 @@ namespace VikingFoodPlus
     /// </summary>
     public static class RecipeGroups
     {
-        internal static bool FoodOpen = true, MeadOpen = true, SecretOpen = true;
+        internal static bool FoodOpen = true, MeadOpen = true, SecretOpen = true, FeedOpen = true;
         /// <summary>Geheimrezepte: Item-Prefabname -> (Namens-Schluessel, Hinweis-Schluessel). Leer = keine Geheimrezepte.</summary>
         internal static readonly List<string[]> SecretItems = new List<string[]>();
         /// <summary>true = Geheimrezepte muessen per Rolle gelernt werden (sonst wie normale Rezepte).</summary>
@@ -115,6 +115,12 @@ namespace VikingFoodPlus
             return n.StartsWith("VFP_Secret_");
         }
 
+        private static bool IsFeed(Recipe r)
+        {
+            var n = r != null && r.m_item != null ? r.m_item.name : "";
+            return n.StartsWith(FeedIds.ItemPrefix);
+        }
+
         private static bool IsMead(Recipe r)
         {
             var n = r != null && r.m_item != null ? r.m_item.name : "";
@@ -177,7 +183,7 @@ namespace VikingFoodPlus
             if ((!groups && !sorting) || AvailableField == null) return;
             var list = AvailableField.GetValue(gui) as IList;
             if (list == null || list.Count == 0) return;
-            var food = new List<object>(); var mead = new List<object>(); var secret = new List<object>();
+            var food = new List<object>(); var mead = new List<object>(); var secret = new List<object>(); var feed = new List<object>();
             PropertyInfo recipeProp = null, elemProp = null;
             foreach (var pair in list)
             {
@@ -190,6 +196,7 @@ namespace VikingFoodPlus
                 var rcp = recipeProp.GetValue(pair, null) as Recipe;
                 if (groups && IsMead(rcp)) mead.Add(pair);
                 else if (groups && IsSecret(rcp)) secret.Add(pair);
+                else if (groups && IsFeed(rcp)) feed.Add(pair);
                 else food.Add(pair);
             }
             if (sorting)
@@ -217,6 +224,8 @@ namespace VikingFoodPlus
                     if (FoodOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
                 foreach (var p in secret)
                     if (SecretOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
+                foreach (var p in feed)
+                    if (FeedOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
                 foreach (var p in mead)
                     if (MeadOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
 
@@ -259,6 +268,13 @@ namespace VikingFoodPlus
                             }
                         }
                     }
+                }
+                if (feed.Count > 0)
+                {
+                    string feedLabel = CauldronFire.Loc("$vfp_group_feed");
+                    if (string.IsNullOrEmpty(feedLabel) || feedLabel.StartsWith("[") || feedLabel.StartsWith("$")) feedLabel = "Tierfutter";
+                    headers.Add(MakeHeader(gui, (FeedOpen ? "▼ " : "▶ ") + feedLabel + " (" + feed.Count + ")", row++, () => { FeedOpen = !FeedOpen; Refresh(gui); }));
+                    if (FeedOpen) foreach (var p in feed) Place(elemProp.GetValue(p, null) as GameObject, row++, space);
                 }
                 if (mead.Count > 0)
                 {

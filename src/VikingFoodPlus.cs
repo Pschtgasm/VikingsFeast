@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.6.0")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.7.0")]
     [BepInDependency(Jotunn.Main.ModGuid)]
     public partial class VikingFoodPlus : BaseUnityPlugin
     {
@@ -34,6 +34,7 @@ namespace VikingFoodPlus
         private ConfigEntry<string> cookingStation;
         private ConfigEntry<bool> seasonalEnabled;
         private ConfigEntry<bool> seasonalAlways;
+        private ConfigEntry<string> language;
         private readonly Dictionary<string, ConfigEntry<float>> health = new Dictionary<string, ConfigEntry<float>>();
         private readonly Dictionary<string, ConfigEntry<float>> eitr = new Dictionary<string, ConfigEntry<float>>();
         private readonly Dictionary<string, ConfigEntry<float>> stamina = new Dictionary<string, ConfigEntry<float>>();
@@ -145,6 +146,10 @@ namespace VikingFoodPlus
         private void Awake()
         {
             enabledMod = Config.Bind(SecGeneral, "Enabled", true, "Viking's Feast an/aus. Neustart noetig.");
+            language = Config.Bind(SecGeneral, "Language", "Auto",
+                new ConfigDescription("Language of the mod texts. Auto = German if Valheim is set to German, English for every other game language. English / German = always this language. Each player sets this in their own config (not synced by the server). Restart required.\n" +
+                    "Sprache der Mod-Texte. Auto = Deutsch, wenn Valheim auf Deutsch steht, sonst Englisch. English / German = immer diese Sprache. Jeder Spieler stellt das in seiner eigenen Config ein. Neustart noetig.",
+                    new AcceptableValueList<string>("Auto", "English", "German")));
             foreach (var food in Foods)
             {
                 // Seit 1.4.2 "Dish - " statt "Food - ": alte Config-Werte (z. B. alte Zutaten) werden so automatisch ignoriert.
@@ -186,10 +191,12 @@ namespace VikingFoodPlus
                 "true = Saisongerichte das ganze Jahr kochbar (Standard). false = nur waehrend Valheims Mittsommer-, Halloween- und Julfest-Zeit. Neustart noetig.");
             BindDrinkConfig();
             BindSecretConfig();
+            BindFeedConfig();
             if (!enabledMod.Value) return;
             if (drinksEnabled.Value) ApplyDrinkStatics();
             if (secretsEnabled.Value) ApplySecretPatches();
-            RecipeGroups.GroupsEnabled = (drinksEnabled.Value || secretsEnabled.Value) && recipeGroups.Value;
+            if (feedEnabled.Value) ApplyFeedPatches();
+            RecipeGroups.GroupsEnabled = (drinksEnabled.Value || secretsEnabled.Value || feedEnabled.Value) && recipeGroups.Value;
             ApplyRecipeGroups();   // Gruppen und/oder Sortier-Knoepfe (beides per Config abschaltbar)
             ItemManager.OnItemsRegistered += AssignSeasonalRecipes;
             PrefabManager.OnVanillaPrefabsAvailable += Register;
@@ -236,8 +243,13 @@ namespace VikingFoodPlus
             }
             try { if (foodEnabled["HeartyFlatbread"].Value) RegisterFlatbreadBaking(); }
             catch (Exception ex) { Logger.LogError("Fladenbrot-Kochofen: " + ex); }
+            if (feedEnabled.Value)
+            {
+                try { RegisterFeeds(); }
+                catch (Exception ex) { Logger.LogError("Tierfutter: " + ex); }
+            }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.6.0 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.7.0 registration complete.");
         }
 
         private void RegisterStation()
@@ -1142,12 +1154,47 @@ namespace VikingFoodPlus
             }
             if (drinksEnabled.Value) AddDrinkTranslations(de, en);
             if (secretsEnabled.Value) AddSecretTranslations(de, en);
+            if (feedEnabled.Value) AddFeedTranslations(de, en);
             de["vfp_sort_health"] = "Gesundheit"; en["vfp_sort_health"] = "Health";
             de["vfp_sort_stamina"] = "Ausdauer"; en["vfp_sort_stamina"] = "Stamina";
             de["vfp_sort_eitr"] = "Eitr"; en["vfp_sort_eitr"] = "Eitr";
-            loc.AddTranslation("German", de);
-            loc.AddTranslation("English", en);
+            // Fuer jede Valheim-Sprache ausdruecklich eine Fassung anmelden. Vorher gab es nur "German" und "English":
+            // bei anderen Spielsprachen entschied Jotunn selbst, und Spieler sahen teils Deutsch (Ticket #1, Dedicated Server).
+            string mode = language != null ? language.Value : "Auto";
+            int deCount = 0, enCount = 0;
+            foreach (var lang in GameLanguages())
+            {
+                bool german = mode == "German" || (mode != "English" && lang == "German");
+                loc.AddTranslation(lang, german ? de : en);
+                if (german) deCount++; else enCount++;
+            }
             LocalizationManager.Instance.AddLocalization(loc);
+            Logger.LogInfo("Sprache/Language: " + mode + " (Deutsch fuer " + deCount + ", Englisch fuer " + enCount + " Spielsprachen)");
+        }
+
+        /// <summary>Alle Spielsprachen: aus Valheims Localization (per Reflection, liegt je nach Version in einer anderen DLL) plus feste Liste.</summary>
+        private static List<string> GameLanguages()
+        {
+            var list = new List<string> { "English", "German", "Swedish", "French", "Italian", "Spanish", "Russian", "Romanian", "Bulgarian",
+                "Macedonian", "Finnish", "Danish", "Norwegian", "Icelandic", "Turkish", "Lithuanian", "Czech", "Hungarian", "Slovak", "Polish",
+                "Dutch", "Portuguese_European", "Portuguese_Brazilian", "Chinese", "Chinese_Trad", "Japanese", "Korean", "Hindi", "Thai",
+                "Abenaki", "Croatian", "Georgian", "Greek", "Serbian", "Ukrainian", "Latvian", "Estonian", "Arabic", "Indonesian", "Vietnamese" };
+            try
+            {
+                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    var t = asm.GetType("Localization", false);
+                    if (t == null) continue;
+                    const BindingFlags st = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+                    object inst = t.GetProperty("instance", st)?.GetValue(null, null) ?? t.GetField("instance", st)?.GetValue(null);
+                    var get = t.GetMethod("GetLanguages", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (inst != null && get != null && get.Invoke(inst, null) is IEnumerable langs)
+                        foreach (var l in langs) { var s = l as string; if (!string.IsNullOrEmpty(s) && !list.Contains(s)) list.Add(s); }
+                    break;
+                }
+            }
+            catch (Exception) { }
+            return list;
         }
 
         private sealed class FoodSpec
