@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.1
+- Changed: the mod description on Thunderstore is now much shorter. All recipes with their values, ingredients and effects are in a sortable online recipe sheet instead (link at the top of the description): https://claude.ai/artifact/HViqJptevjZptkcLeBPn3C
+- New in the recipe sheet: a list of every ingredient and every recipe that uses it, to sort and filter by ingredient.
+- No changes to the mod itself.
+
 ## 1.7.0
 - New: animal feed. 6 feeds at the Runic Cauldron (new group "Animal feed") for boar, wolf, lox, asksvin and hen. Each feed lasts 30 minutes and makes the animal glow in its colour:
 

@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.7.0")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.7.1")]
     [BepInDependency(Jotunn.Main.ModGuid)]
     public partial class VikingFoodPlus : BaseUnityPlugin
     {
@@ -249,7 +249,7 @@ namespace VikingFoodPlus
                 catch (Exception ex) { Logger.LogError("Tierfutter: " + ex); }
             }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.7.0 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.7.1 registration complete.");
         }
 
         private void RegisterStation()

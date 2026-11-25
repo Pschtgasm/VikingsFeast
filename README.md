@@ -72,6 +72,8 @@ Build the **Runic Cauldron** with the Hammer (Crafting tab). It has its own fire
 
 ![Food Showcase](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/food_showcase.png)
 
+📊 **Sortable recipe sheet** with all dishes, drinks and feeds plus a list of every ingredient: [Recipe sheet](https://claude.ai/artifact/HViqJptevjZptkcLeBPn3C)
+
 Every dish makes **two portions** by default.
 
 ### 🌿 Meadows & Black Forest
