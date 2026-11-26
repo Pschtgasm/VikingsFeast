@@ -1,6 +1,6 @@
 # Viking's Feast
 
-**24 hand-crafted Viking dishes, 11 meads, 6 animal feeds, a Runic Cauldron that grows with your journey, and three station upgrades with fully custom 3D models.**
+**24 hand-crafted Viking dishes, 8 victory feasts, 11 meads, 6 animal feeds, a Runic Cauldron that grows with your journey, and three station upgrades with fully custom 3D models.**
 
 From a simple boar herb roast in the Meadows to an Essence of Eternal Frost in the Deep North, Viking's Feast adds a full cooking progression for every biome, all cooked at the **Runic Cauldron**. Brew meads with small, useful effects Valheim does not have, share mead kegs with your crew, and cook feed that helps you tame, breed and strengthen your animals.
 
@@ -37,6 +37,7 @@ This is the support repository for **Viking's Feast**.
 ## ✨ Features
 
 - **24 new recipes** plus **3 seasonal dishes** for Valheim's Midsummer, Halloween and Yule events, covering Meadows, Black Forest, Swamp, Mountains, Plains, Mistlands, Ashlands and the Deep North
+- **8 victory feasts** *(new in 1.8.0)*: one feast per boss, made from its trophy. Stronger than any food of its biome, with a boss-themed bonus for the whole group. Unlocks once the boss is defeated
 - **6 animal feeds** *(new in 1.7.0)*: one per biome for boar, wolf, lox, asksvin and hen. Tame faster, breed faster, get offspring with an extra star or make your animals stronger. Fed animals glow in the colour of their feed
 - **7 secret recipes** *(new in 1.6.0)*: one per biome, learned from recipe scrolls found in chests or bought from traders, each with its own special effect
 - **11 drinks** *(new in 1.5.0)*: 7 single meads and 4 mead kegs for groups, each with a small effect Valheim does not have
@@ -45,7 +46,7 @@ This is the support repository for **Viking's Feast**.
 - **Four visual stages**: the cauldron changes its look with every upgrade (Standard → Swamp → Mistlands → Deep North), each with its own glowing sign: boar head, dead tree, Seeker, snowflake
 - **Three station upgrades**, each with its own custom model that also changes with the cauldron stage
 - **Fermentation Barrel** brews mead too: no roof needed, shows its state and the remaining time
-- **Tidy cooking menu**: at the Runic Cauldron the recipes are split into the collapsible groups **Food**, **Secret recipes**, **Animal feed** and **Mead**. Three potions at the top right sort the dishes by health, stamina or eitr (also at other stations if you like, see config)
+- **Tidy cooking menu**: at the Runic Cauldron the recipes are split into the collapsible groups **Food**, **Secret recipes**, **Victory feasts**, **Animal feed** and **Mead**. Three potions at the top right sort the dishes by health, stamina or eitr (also at other stations if you like, see config)
 - **Valheim-style icons** for every dish, drink and station
 - **Small food effects**: 5 dishes give a mild extra effect for 10 minutes
 - **Hearty Flatbread**: prepare the dough at the Runic Cauldron, then bake it in the vanilla oven
@@ -164,6 +165,31 @@ The effects are intentionally weaker than vanilla resistance meads and can be sw
 
 ---
 
+
+
+---
+
+## 🏆 Victory feasts *(new in 1.8.0)*
+
+![Victory Feasts](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/victory_feasts_showcase.png)
+
+One feast for every boss, cooked at the Runic Cauldron (group **Victory feasts (x/8)**) from the **boss trophy** and three ingredients of its biome, and placed with the **Serving Tray**. 10 servings for the whole group, each a bit **stronger than the best food of its biome**, plus a 30-minute bonus. The platter is the vanilla feast of the boss's biome in the boss's colour, with the boss trophy on top.
+
+| Boss | Victory feast | Lvl | Ingredients | ❤️ | ⚡ | 🔮 | Bonus (30 min) |
+|---|---|:-:|---|:-:|:-:|:-:|---|
+| Eikthyr | Stag king's roast | 1 | Eikthyr trophy 1, Deer meat 8, Honey 4, Raspberries 8 | 38 | 38 | – | Move 10 % faster |
+| The Elder | Elder's root feast | 1 | The Elder trophy 1, Carrot 10, Yellow mushroom 8, Blueberries 8 | 48 | 48 | – | Attacks and chopping wood cost 15 % less stamina |
+| Bonemass | Bog banquet | 2 | Bonemass trophy 1, Bloodbag 6, Entrails 8, Turnip 10 | 58 | 58 | – | Less poison damage, health regenerates 25 % faster |
+| Moder | Dragon feast | 2 | Moder trophy 1, Wolf meat 8, Onion 8, Freeze gland 4 | 70 | 70 | – | Less frost damage, 50 % less fall damage |
+| Yagluth | Fire king's table | 2 | Yagluth trophy 1, Lox meat 8, Barley flour 10, Cloudberries 8 | 80 | 80 | – | Your hits deal an extra 10 % fire damage |
+| The Queen | Queen's banquet | 3 | The Queen trophy 1, Hare meat 6, Magecap 8, Royal jelly 6 | 90 | 90 | 45 | +100 carry weight, 15 % less damage from seekers, gjall and ticks |
+| Fader | Ember victory meal | 3 | Fader trophy 1, Asksvin meat 8, Volture meat 4, Vineberry cluster 10 | 110 | 110 | 55 | Fire damage halved |
+| Kall Fimbulbringer | Fimbul banquet | 4 | Kall's boss drop 1, Moose meat 8, Lingonberries 10, Oats 8 | 120 | 120 | 60 | Less frost damage, stamina regenerates 15 % faster |
+
+**Unlock:** a victory feast becomes available once its boss has been defeated in your world. Until then it shows up as **???** with a hint which boss to defeat. The first time you eat from a victory feast you get a message, e.g. *"You celebrate the victory over Moder!"*
+
+---
+
 ## 🐗 Animal feed *(new in 1.7.0)*
 
 ![Animal Feed](https://raw.githubusercontent.com/Pschtgasm/VikingsFeast/main/docs/images/animal_feed_showcase.png)
@@ -274,11 +300,15 @@ Ferments mead like the vanilla Fermenter, but **without a roof**. You can see wh
 - Animal feed on/off (`Enabled`), glow on/off (`Glow`, takes effect immediately), duration (`Duration`, default `1800` s)
 - Effect strength: `TamingSpeed`, `TamingCalm`, `BreedingSpeed`, `StarChance`, `MaxStars`, `DamageBonus`, `DamageReduction`, `FireReduction`, `HealPercent`
 
+**7 - Victory Feasts**
+- Victory feasts on/off (`Enabled`), unlock only after the boss kill (`NeedBossKill`, default on), message on the first meal (`ShowMessage`) and the boss trophy on the platter (`TrophyDecoration`)
+
 **Single dishes and drinks** (at the end of the file)
 - `Dish - <ID>`: on/off, health, stamina, eitr, duration, regen, ingredients (`Prefab:count`), portions
 - `Drink - <ID>`: on/off, ingredients, effect strength, duration
 - `Secret - <ID>`: on/off, values, ingredients, portions, chests (`LootChests`), trader (`SoldBy`) and boss key (`SoldAfterBoss`)
 - `Feed - <ID>`: on/off, ingredients, portions
+- `Victory - <Boss>`: on/off, ingredients, position of the trophy on the platter (`TrophyTurn`, `TrophyTilt`, `TrophySize`, `TrophyHeight`, `TrophyBack`, `TrophySide`)
 
 A game restart is required after most changes. On servers, everyone should use the same config.
 
@@ -309,6 +339,8 @@ Multiplayer: install the mod on **all clients and the server**.
 - **Runen-Trockengestell** → Kochstufe 3
 - **Eisdestillerie** → Kochstufe 4, schaltet die Gerichte des Nordens frei
 
+**Neu in 1.8.0: Siegesmähler.** Für jeden Boss ein Festmahl am Runenkessel (Gruppe **Siegesmähler**), gekocht aus seiner **Trophäe** und drei Zutaten seines Bioms und mit dem Servierbrett aufgestellt: Hirschkönigs-Braten, Wurzelschmaus des Ältesten, Moorgelage, Drachenfest, Feuerkönigs-Tafel, Bankett der Königin, Glutsieg-Mahl und Fimbul-Festtafel. 10 Portionen für die ganze Gruppe, jeweils etwas stärker als das beste Essen des Bioms, dazu ein Bonus für 30 Minuten. Ein Siegesmahl wird freigeschaltet, sobald sein Boss in der Welt besiegt ist, vorher steht es als **???** mit Hinweis am Kessel. Auf der Platte thront die Trophäe des Bosses, und beim ersten Essen heißt es: „Ihr feiert den Sieg über Moder!“
+
 **Neu in 1.7.0: Tierfutter.** 6 Futter am Runenkessel (Gruppe **Tierfutter**) für Eber, Wolf, Lox, Asksvin und Huhn, eins pro Biom: **Zähmkraut** (doppelt so schnell zahm, Tiere bleiben ruhig), **Freyas Lockfutter** (schnellere Paarung), **Nornensegen** (25 % Chance auf ein Junges mit einem Stern mehr), **Fenrirs Biss** (+25 % Schaden), **Panzerkorn** (25 % weniger Schaden) und **Glutpanzer** (halber Feuerschaden, langsame Heilung). Füttern per Hotbar-Taste (Tier ansehen) oder durch Ablegen auf dem Boden. Jedes Futter wirkt 30 Minuten, höchstens 2 pro Tier. Gefütterte Tiere leuchten in der Farbe ihres Futters, der Hover-Text zeigt die Restzeit. Jedes Futter hat einen eigenen Sack mit Symbol, der auch auf den Objektständer passt.
 
 **Neu in 1.6.1:** Die Sprache der Mod-Texte folgt jetzt zuverlässig der Spielsprache (Deutsch bei deutschem Spiel, sonst Englisch) und lässt sich in der Config unter `1 - General > Language` fest einstellen.
@@ -329,7 +361,7 @@ Dazu kommen drei Saisongerichte zu Mittsommer, Halloween und Julfest sowie drei 
 | `Icons/` | Food and build menu icons (embedded into the DLL) |
 | `Models/` | 3D models of the Runic Cauldron, its upgrades, all dishes, the recipe scroll and the animal feed sacks (`.obj` / `.mtl`) |
 | `Translations/` | German and English localization |
-| `tools/` | Python scripts that generate the 3D models, and a PowerShell script for the animal feed icons |
+| `tools/` | Python scripts that generate the 3D models, and PowerShell scripts for the animal feed and victory feast icons |
 | `docs/notizen/` | Development notes (German) |
 | `docs/images/` | Images for this description |
 

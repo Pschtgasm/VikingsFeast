@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace VikingFoodPlus
 {
-    [BepInPlugin(Guid, "Viking's Feast", "1.7.1")]
+    [BepInPlugin(Guid, "Viking's Feast", "1.8.0")]
     [BepInDependency(Jotunn.Main.ModGuid)]
     public partial class VikingFoodPlus : BaseUnityPlugin
     {
@@ -192,11 +192,13 @@ namespace VikingFoodPlus
             BindDrinkConfig();
             BindSecretConfig();
             BindFeedConfig();
+            BindVictoryConfig();
             if (!enabledMod.Value) return;
             if (drinksEnabled.Value) ApplyDrinkStatics();
             if (secretsEnabled.Value) ApplySecretPatches();
             if (feedEnabled.Value) ApplyFeedPatches();
-            RecipeGroups.GroupsEnabled = (drinksEnabled.Value || secretsEnabled.Value || feedEnabled.Value) && recipeGroups.Value;
+            if (victoryEnabled.Value) ApplyVictoryPatches();
+            RecipeGroups.GroupsEnabled = (drinksEnabled.Value || secretsEnabled.Value || feedEnabled.Value || victoryEnabled.Value) && recipeGroups.Value;
             ApplyRecipeGroups();   // Gruppen und/oder Sortier-Knoepfe (beides per Config abschaltbar)
             ItemManager.OnItemsRegistered += AssignSeasonalRecipes;
             PrefabManager.OnVanillaPrefabsAvailable += Register;
@@ -248,8 +250,13 @@ namespace VikingFoodPlus
                 try { RegisterFeeds(); }
                 catch (Exception ex) { Logger.LogError("Tierfutter: " + ex); }
             }
+            if (victoryEnabled.Value)
+            {
+                try { RegisterVictoryFeasts(); }
+                catch (Exception ex) { Logger.LogError("Siegesmaehler: " + ex); }
+            }
             try { RegisterTranslations(); } catch (Exception ex) { Logger.LogError("Localization: " + ex); }
-            Logger.LogInfo("Viking's Feast 1.7.1 registration complete.");
+            Logger.LogInfo("Viking's Feast 1.8.0 registration complete.");
         }
 
         private void RegisterStation()
@@ -916,6 +923,8 @@ namespace VikingFoodPlus
             if (go == null) throw new Exception("Missing item model: " + food.Model);
             var item = go.GetComponent<ItemDrop>();
             if (item == null) throw new Exception("Missing ItemDrop on " + food.Model);
+            // Klon zeigte sonst weiter auf QueensJam (Valheim setzt m_dropPrefab nur, wenn leer) -> z. B. Easy Spawner zeigte "Beerenmarmelade"
+            item.m_itemData.m_dropPrefab = go;
             var shared = item.m_itemData.m_shared;
             shared.m_name = "$vfp_" + food.Id.ToLowerInvariant();
             shared.m_description = "$vfp_" + food.Id.ToLowerInvariant() + "_desc";
@@ -986,6 +995,7 @@ namespace VikingFoodPlus
             if (dough == null) throw new Exception("Vanilla BreadDough prefab not found");
             var drop = dough.GetComponent<ItemDrop>();
             if (drop == null) throw new Exception("BreadDough has no ItemDrop");
+            drop.m_itemData.m_dropPrefab = dough;
             drop.m_itemData.m_shared.m_name = "$vfp_flatbreaddough";
             drop.m_itemData.m_shared.m_description = "$vfp_flatbreaddough_desc";
             // No food bonuses on uncooked dough.
@@ -1155,6 +1165,7 @@ namespace VikingFoodPlus
             if (drinksEnabled.Value) AddDrinkTranslations(de, en);
             if (secretsEnabled.Value) AddSecretTranslations(de, en);
             if (feedEnabled.Value) AddFeedTranslations(de, en);
+            if (victoryEnabled.Value) AddVictoryTranslations(de, en);
             de["vfp_sort_health"] = "Gesundheit"; en["vfp_sort_health"] = "Health";
             de["vfp_sort_stamina"] = "Ausdauer"; en["vfp_sort_stamina"] = "Stamina";
             de["vfp_sort_eitr"] = "Eitr"; en["vfp_sort_eitr"] = "Eitr";

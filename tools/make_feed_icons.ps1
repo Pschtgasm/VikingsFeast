@@ -106,13 +106,7 @@ foreach ($f in $feeds) {
     $g = [Drawing.Graphics]::FromImage($bmp)
     $g.SmoothingMode = 'AntiAlias'; $g.InterpolationMode = 'HighQualityBicubic'; $g.Clear([Drawing.Color]::Transparent)
 
-    # Leuchten hinter dem Sack
-    $halo = New-Object Drawing.Drawing2D.GraphicsPath
-    $halo.AddEllipse(26, 40, 460, 460)
-    $hb = New-Object Drawing.Drawing2D.PathGradientBrush $halo
-    $hb.CenterColor = New-Color 170 $glow
-    $hb.SurroundColors = @([Drawing.Color]::FromArgb(0, $glow[0], $glow[1], $glow[2]))
-    $g.FillPath($hb, $halo)
+    # kein Schein mehr (Valheim-Stil)
 
     # Sackkoerper
     $sack = New-Object Drawing.Drawing2D.GraphicsPath
@@ -160,3 +154,6 @@ foreach ($f in $feeds) {
     $bmp.Dispose()
     "erstellt: $path"
 }
+
+# Valheim-Stil: Licht, Maltextur, Umriss, Schatten
+& (Join-Path $PSScriptRoot 'stylize_icons.ps1') (Join-Path $out 'Feed_*.png')

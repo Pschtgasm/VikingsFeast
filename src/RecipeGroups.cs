@@ -16,7 +16,12 @@ namespace VikingFoodPlus
     /// </summary>
     public static class RecipeGroups
     {
-        internal static bool FoodOpen = true, MeadOpen = true, SecretOpen = true, FeedOpen = true;
+        internal static bool FoodOpen = true, MeadOpen = true, SecretOpen = true, FeedOpen = true, VictoryOpen = true;
+        /// <summary>Siegesmaehler: { Item-Prefab (Material), Namens-Schluessel, Hinweis-Schluessel, Icon-Prefab (Trophaee),
+        /// Titel-Schluessel, Erklaerungs-Schluessel, globaler Boss-Schluessel }.</summary>
+        internal static readonly List<string[]> VictoryItems = new List<string[]>();
+        /// <summary>true = Siegesmaehler erst nach dem Bosssieg (sonst ??? mit Hinweis).</summary>
+        internal static bool VictoryNeedKill = true;
         /// <summary>Geheimrezepte: Item-Prefabname -> (Namens-Schluessel, Hinweis-Schluessel). Leer = keine Geheimrezepte.</summary>
         internal static readonly List<string[]> SecretItems = new List<string[]>();
         /// <summary>true = Geheimrezepte muessen per Rolle gelernt werden (sonst wie normale Rezepte).</summary>
@@ -76,10 +81,10 @@ namespace VikingFoodPlus
                     var rp = sel != null ? sel.GetType().GetProperty("Recipe") : null;
                     var rec = rp != null ? rp.GetValue(sel, null) as Recipe : null;
                     if (rec != null || !__instance.InCraftTab()) { LockedSel = null; lockedInfo = null; return; }   // normales Rezept gewaehlt
-                    string title = CauldronFire.Loc("$vfp_secret_locked");
+                    string title = CauldronFire.Loc(lockedInfo.Length > 4 ? lockedInfo[4] : "$vfp_secret_locked");
                     if (string.IsNullOrEmpty(title) || title.StartsWith("[")) title = "??? – Geheimrezept";
                     string hint = CauldronFire.Loc(lockedInfo[2]);
-                    string how = CauldronFire.Loc("$vfp_secret_locked_desc");
+                    string how = CauldronFire.Loc(lockedInfo.Length > 5 ? lockedInfo[5] : "$vfp_secret_locked_desc");
                     if (string.IsNullOrEmpty(how) || how.StartsWith("[")) how = "Finde die passende Rezeptrolle, um dieses Geheimrezept zu lernen.";
                     SetText(NameField != null ? NameField.GetValue(__instance) : null, title);
                     SetText(DescField != null ? DescField.GetValue(__instance) : null, "<color=#ffd27a>" + hint + "</color>\n\n" + how);
@@ -113,6 +118,12 @@ namespace VikingFoodPlus
         {
             var n = r != null && r.m_item != null ? r.m_item.name : "";
             return n.StartsWith("VFP_Secret_");
+        }
+
+        private static bool IsVictory(Recipe r)
+        {
+            var n = r != null && r.m_item != null ? r.m_item.name : "";
+            return n.StartsWith("VFP_Victory_");
         }
 
         private static bool IsFeed(Recipe r)
@@ -183,7 +194,7 @@ namespace VikingFoodPlus
             if ((!groups && !sorting) || AvailableField == null) return;
             var list = AvailableField.GetValue(gui) as IList;
             if (list == null || list.Count == 0) return;
-            var food = new List<object>(); var mead = new List<object>(); var secret = new List<object>(); var feed = new List<object>();
+            var food = new List<object>(); var mead = new List<object>(); var secret = new List<object>(); var feed = new List<object>(); var victory = new List<object>();
             PropertyInfo recipeProp = null, elemProp = null;
             foreach (var pair in list)
             {
@@ -197,6 +208,7 @@ namespace VikingFoodPlus
                 if (groups && IsMead(rcp)) mead.Add(pair);
                 else if (groups && IsSecret(rcp)) secret.Add(pair);
                 else if (groups && IsFeed(rcp)) feed.Add(pair);
+                else if (groups && IsVictory(rcp)) victory.Add(pair);
                 else food.Add(pair);
             }
             if (sorting)
@@ -224,6 +236,18 @@ namespace VikingFoodPlus
                     if (FoodOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
                 foreach (var p in secret)
                     if (SecretOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
+                // Siegesmaehler: Zeilen noch nicht besiegter Bosse entfernen (erscheinen unten als ???)
+                var victoryShown = new List<object>();
+                foreach (var p in victory)
+                {
+                    var rr = recipeProp.GetValue(p, null) as Recipe;
+                    string[] vi = null;
+                    foreach (var x in VictoryItems) if (rr != null && rr.m_item != null && rr.m_item.name == x[0]) { vi = x; break; }
+                    bool unlocked = vi == null || !VictoryNeedKill || VikingFoodPlus.BossDefeated(vi[6]);
+                    if (unlocked && VictoryOpen) { list.Add(p); victoryShown.Add(p); }
+                    else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
+                }
+                victory = victoryShown;
                 foreach (var p in feed)
                     if (FeedOpen) list.Add(p); else UnityEngine.Object.Destroy(elemProp.GetValue(p, null) as GameObject);
                 foreach (var p in mead)
@@ -266,6 +290,35 @@ namespace VikingFoodPlus
                                 lk.name = "VFP_LockedRow";
                                 headers.Add(lk);
                             }
+                        }
+                    }
+                }
+                if (VictoryItems.Count > 0)
+                {
+                    var lockedV = new List<string[]>();
+                    foreach (var vi in VictoryItems)
+                    {
+                        bool shown = false;
+                        foreach (var p in victory) { var rr = recipeProp.GetValue(p, null) as Recipe; if (rr != null && rr.m_item != null && rr.m_item.name == vi[0]) { shown = true; break; } }
+                        if (!shown && VictoryNeedKill && !VikingFoodPlus.BossDefeated(vi[6])) lockedV.Add(vi);
+                    }
+                    int unlockedCount = VictoryItems.Count - lockedV.Count;
+                    string vLabel = CauldronFire.Loc("$vfp_group_victory");
+                    if (string.IsNullOrEmpty(vLabel) || vLabel.StartsWith("[") || vLabel.StartsWith("$")) vLabel = "Siegesmähler";
+                    headers.Add(MakeHeader(gui, (VictoryOpen ? "▼ " : "▶ ") + vLabel + " (" + unlockedCount + "/" + VictoryItems.Count + ")", row++, () => { VictoryOpen = !VictoryOpen; Refresh(gui); }));
+                    if (VictoryOpen)
+                    {
+                        foreach (var p in victory) Place(elemProp.GetValue(p, null) as GameObject, row++, space);
+                        foreach (var vi in lockedV)
+                        {
+                            var info = vi;
+                            GameObject lk = null;
+                            lk = MakeHeader(gui, "   ???", row++, () => SelectLocked(gui, info, lk));
+                            var nm = lk.transform.Find("name");
+                            var g2 = nm != null ? nm.GetComponent<Graphic>() : null;
+                            if (g2 != null) g2.color = LockedSel == info[0] ? new Color(1f, 0.82f, 0.45f) : new Color(0.62f, 0.56f, 0.48f);
+                            lk.name = "VFP_LockedRow";
+                            headers.Add(lk);
                         }
                     }
                 }

@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.8.0
+- New: victory feasts. One feast per boss, made from the boss trophy and ingredients of its biome at the Runic Cauldron (new group "Victory feasts (x/8)"), placed with the Serving Tray. 10 servings for the whole group, each a bit stronger than the best food of its biome, plus a 30-minute bonus:
+
+  | Boss | Victory feast | Health / Stamina / Eitr | Bonus |
+  |---|---|---|---|
+  | Eikthyr | Stag king's roast | 38 / 38 / – | Move 10% faster |
+  | The Elder | Elder's root feast | 48 / 48 / – | Attacks and chopping wood cost 15% less stamina |
+  | Bonemass | Bog banquet | 58 / 58 / – | Less poison damage, health regenerates 25% faster |
+  | Moder | Dragon feast | 70 / 70 / – | Less frost damage, 50% less fall damage |
+  | Yagluth | Fire king's table | 80 / 80 / – | Your hits deal an extra 10% fire damage |
+  | The Queen | Queen's banquet | 90 / 90 / 45 | +100 carry weight, 15% less damage from seekers, gjall and ticks |
+  | Fader | Ember victory meal | 110 / 110 / 55 | Fire damage halved |
+  | Kall Fimbulbringer | Fimbul banquet | 120 / 120 / 60 | Less frost damage, stamina regenerates 15% faster |
+
+  - A victory feast unlocks once its boss has been defeated in your world. Until then it shows up as "???" with a hint which boss to defeat.
+  - The first time you eat from a victory feast you get a message, e.g. "You celebrate the victory over Moder!".
+  - Each platter looks like the vanilla feast of the boss's biome, tinted in the boss's colour, with the boss trophy on the platter as decoration.
+- New config section `7 - Victory Feasts`: `Enabled`, `NeedBossKill`, `ShowMessage`, `TrophyDecoration`. Per feast `Victory - <Boss>`: on/off and ingredients, plus the position of the trophy on the platter (`TrophyTurn`, `TrophyTilt`, `TrophySize`, `TrophyHeight`, `TrophyBack`, `TrophySide`).
+- Changed: animal feed icons reworked in Valheim style (light, texture, outline and shadow instead of a glow).
+- Fixed: dishes, secret recipes and the flatbread dough still pointed to the vanilla item they were copied from. Spawn tools like Easy Spawner therefore listed many of them as "Queen's jam".
+
 ## 1.7.1
 - Changed: the mod description on Thunderstore is now much shorter. All recipes with their values, ingredients and effects are in a sortable online recipe sheet instead (link at the top of the description): https://claude.ai/artifact/HViqJptevjZptkcLeBPn3C
 - New in the recipe sheet: a list of every ingredient and every recipe that uses it, to sort and filter by ingredient.

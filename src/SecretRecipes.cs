@@ -154,6 +154,7 @@ namespace VikingFoodPlus
             var go = PrefabManager.Instance.CreateClonedPrefab(id, sp.Model);
             if (go == null) throw new Exception("Modell fehlt: " + sp.Model);
             var item = go.GetComponent<ItemDrop>();
+            item.m_itemData.m_dropPrefab = go;   // sonst Verweis auf das Vanilla-Vorbild (falscher Name z. B. in Easy Spawner)
             var sh = item.m_itemData.m_shared;
             sh.m_name = "$" + key;
             sh.m_description = "$" + key + "_desc";
